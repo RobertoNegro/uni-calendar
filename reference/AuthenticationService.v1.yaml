@@ -1,0 +1,169 @@
+openapi: 3.0.0
+info:
+  title: AuthenticationService
+  version: '1.0'
+  description: Service used for user authentication
+servers:
+  - url: 'http://localhost:8081'
+paths:
+  /login:
+    parameters: []
+    post:
+      summary: Login
+      operationId: post-login
+      responses:
+        '200':
+          description: 'JWT Token (containing ID of the user and expiration time in seconds), and expiration time (in seconds), together with the public information about the user'
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  token:
+                    type: string
+                  expiration:
+                    type: integer
+                  user:
+                    $ref: '#/components/schemas/PublicUser'
+                required:
+                  - token
+                  - expiration
+                  - user
+      description: Used to perform the login of the user.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                username:
+                  type: string
+                  minLength: 1
+                password:
+                  type: string
+                  minLength: 1
+              required:
+                - username
+                - password
+            examples: {}
+        description: Post the necessary fields for the API to perform the authentication.
+  /signup:
+    post:
+      summary: Signup
+      operationId: post-signup
+      responses:
+        '200':
+          description: 'User is created. '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublicUser'
+        description: Post the necessary fields for the API to create a new user.
+      description: Create a new user.
+    parameters: []
+  /google/login:
+    post:
+      summary: Google OAuth Login
+      operationId: post-google-login
+      responses:
+        '200':
+          description: OK
+      description: |-
+        Used to perform the login of the user via Google OAuth
+        @See http://www.passportjs.org/docs/google/
+    parameters: []
+  /confirm:
+    get:
+      summary: Confirmation of the newly registered account
+      tags: []
+      responses: {}
+      operationId: get-confirm
+      description: Used to confirm newly registered account (link provided via email)
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: token
+          description: Confirmation token
+          required: true
+  /google/signup:
+    post:
+      summary: Google OAuth Signup
+      tags: []
+      responses: {}
+      operationId: post-google-signup
+      description: |-
+        Used to perform the signup of the user via Google OAuth
+        @See http://www.passportjs.org/docs/google/
+components:
+  schemas:
+    User:
+      description: All the stored information regarding the user
+      type: object
+      title: User
+      properties:
+        id:
+          type: number
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        googleId:
+          type: string
+        lastName:
+          type: string
+        firstName:
+          type: string
+        university:
+          type: string
+        confirmed:
+          type: boolean
+        confirmationToken:
+          type: string
+      required:
+        - username
+        - email
+        - password
+        - googleId
+        - lastName
+        - firstName
+        - university
+        - confirmed
+        - confirmationToken
+    PublicUser:
+      title: Public User
+      type: object
+      description: '"Publicly" available user data'
+      properties:
+        id:
+          type: number
+        username:
+          type: string
+        email:
+          type: string
+        lastName:
+          type: string
+        firstName:
+          type: string
+        university:
+          type: string
+        confirmed:
+          type: boolean
+      required:
+        - username
+        - email
+        - lastName
+        - firstName
+        - university
+        - confirmed
+  securitySchemes: {}

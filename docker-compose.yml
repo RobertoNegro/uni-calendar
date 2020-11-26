@@ -1,0 +1,98 @@
+version: "3.8"
+
+services:
+
+  db:
+    image: postgres
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: unicalendar_db
+    ports:
+      - 8999:5432
+    networks:
+      app_net:
+        ipv4_address: 172.20.0.254
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - 8081:3000
+    networks:
+      app_net:
+        ipv4_address: 172.20.0.10
+    volumes:
+      - /www/node_modules
+      - ./frontend:/www
+
+  calendar:
+    build:
+      context: ./calendar
+    ports:
+      - 8082:80
+    networks:
+      app_net:
+        ipv4_address: 172.20.0.20
+    volumes:
+      - /www/node_modules
+      - ./calendar:/www
+
+  authentication:
+    build:
+      context: ./authentication
+    ports:
+      - 8083:80
+    networks:
+      app_net:
+        ipv4_address: 172.20.0.30
+    volumes:
+      - /www/node_modules
+      - ./authentication:/www
+
+
+  notification:
+    build:
+      context: ./notification
+    ports:
+      - 8084:80
+    networks:
+      app_net:
+        ipv4_address: 172.20.0.40
+    volumes:
+      - /www/node_modules
+      - ./notification:/www
+
+  universitites_gateway:
+    build:
+      context: ./universities-gateway
+    ports:
+      - 8085:80
+    networks:
+      app_net:
+        ipv4_address: 172.20.0.50
+    volumes:
+      - /www/node_modules
+      - ./universities-gateway:/www
+
+  unitn_gateway:
+    build:
+      context: ./unitn-gateway
+    ports:
+      - 8086:80
+    networks:
+      app_net:
+        ipv4_address: 172.20.0.60
+    volumes:
+      - /www/node_modules
+      - ./unitn-gateway:/www
+
+
+networks:
+  app_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.20.0.0/24"

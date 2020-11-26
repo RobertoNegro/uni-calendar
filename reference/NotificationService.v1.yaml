@@ -1,0 +1,58 @@
+openapi: 3.0.0
+info:
+  title: NotificationService
+  version: '1.0'
+servers:
+  - url: 'http://localhost:8084'
+paths:
+  /telegram:
+    post:
+      summary: Send a Telegram notification
+      operationId: post-telegram
+      description: 'Send a Telegram notification '
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+        description: ''
+      responses:
+        '200':
+          description: OK
+    parameters: []
+  /telegram/bot:
+    post:
+      summary: Telegram BOT callback
+      operationId: post-telegram-bot
+      responses:
+        '200':
+          description: OK
+      description: |-
+        Used for the elaborations of the user inputs in the bot and generation of responses
+
+        /start <user_token> will associate the user id by which <user_token> belongs to the chat.id received from Telegram API.
+        /stop will remove that association
+
+        A single user can have multiple active instances.
+    parameters: []
+components:
+  schemas:
+    TelegramNotification:
+      title: TelegramNotification
+      type: object
+      description: ''
+      x-examples: {}
+      properties:
+        user_ids:
+          type: array
+          description: Unique identifier for the given user.
+          items:
+            type: integer
+        message:
+          type: string
+        event:
+          $ref: ./CalendarService.v1.yaml#/components/schemas/Event
+      required:
+        - user_ids
+        - message

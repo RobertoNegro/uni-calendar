@@ -1,0 +1,70 @@
+openapi: 3.0.0
+info:
+  title: GatewaysServices
+  version: '1.0'
+servers:
+  - url: 'http://localhost:8083'
+paths:
+  /universities:
+    parameters: []
+    get:
+      summary: Get list of universities
+      operationId: get-universities
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/University'
+  /university:
+    post:
+      summary: Add a new University
+      operationId: post-university
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/University'
+      security:
+        - Admin Key: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UniversityCreation'
+components:
+  schemas:
+    University:
+      description: ''
+      type: object
+      properties:
+        id:
+          type: number
+        shortName:
+          type: string
+        fullName:
+          type: string
+      required:
+        - id
+        - shortName
+        - fullName
+    UniversityCreation:
+      title: UniversityCreation
+      type: object
+      properties:
+        shortName:
+          type: string
+        fullName:
+          type: string
+      required:
+        - shortName
+        - fullName
+  securitySchemes:
+    Admin Key:
+      type: http
+      scheme: basic

@@ -26,6 +26,25 @@ paths:
       parameters: []
       security:
         - JWT Token: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                from:
+                  type: number
+                  description: Timestamp of starting date
+                to:
+                  type: number
+                  description: Timestamp of ending date
+                limit:
+                  type: number
+                  description: Limit the results to a specific amount
+                skip:
+                  type: number
+                  description: Skip the first N elements
   '/event/{id}':
     parameters:
       - schema:

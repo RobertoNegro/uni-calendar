@@ -49,10 +49,13 @@ components:
           type: string
         fullName:
           type: string
+        serverURI:
+          type: string
       required:
         - id
         - shortName
         - fullName
+        - serverURI
     UniversityCreation:
       title: UniversityCreation
       type: object

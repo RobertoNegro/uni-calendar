@@ -14,8 +14,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties: {}
+              $ref: '#/components/schemas/TelegramNotification'
         description: ''
       responses:
         '200':
@@ -36,6 +35,19 @@ paths:
 
         A single user can have multiple active instances.
     parameters: []
+  /email:
+    post:
+      summary: Send an email notification
+      operationId: post-email
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailNotification'
+        description: ''
 components:
   schemas:
     TelegramNotification:
@@ -56,3 +68,21 @@ components:
       required:
         - user_ids
         - message
+    EmailNotification:
+      title: EmailNotification
+      type: object
+      properties:
+        user_ids:
+          type: array
+          items:
+            type: number
+        message:
+          type: string
+        subject:
+          type: string
+        event:
+          $ref: ./CalendarService.v1.yaml#/components/schemas/Event
+      required:
+        - user_ids
+        - message
+        - subject

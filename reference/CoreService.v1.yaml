@@ -116,7 +116,7 @@ paths:
       security:
         - Google OAuth 2.0: []
     delete:
-      summary: Delete course settings
+      summary: Delete followed course
       operationId: delete-calendar-course-id
       responses:
         '200':
@@ -125,7 +125,7 @@ paths:
       security:
         - Google OAuth 2.0: []
     put:
-      summary: Update course settings
+      summary: Update followed course
       operationId: put-calendar-course-id
       responses:
         '200':

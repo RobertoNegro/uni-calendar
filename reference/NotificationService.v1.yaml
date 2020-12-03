@@ -33,7 +33,7 @@ paths:
         '200':
           description: OK
       description: |-
-        Used for the elaborations of the user inputs in the bot and generation of responses
+        Used for the elaborations of the user inputs in the bot and generation of responses.
 
         /start <user_token> will associate the user id by which <user_token> belongs to the chat.id received from Telegram API.
         /stop will remove that association

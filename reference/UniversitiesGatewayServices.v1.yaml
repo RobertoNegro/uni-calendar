@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: UniversitiesGatewayServices
   version: '1.0'
-  description: Used to obtain a list of the available university gateways and redirect the requests to the correct gateway. ßNot exposed outside to the outside.
+  description: Used to obtain a list of the available university gateways and redirect the requests to the correct gateway. Not exposed outside to the outside.
 servers:
   - url: 'http://localhost:8083'
 paths:
@@ -83,7 +83,7 @@ paths:
               type: array
               items:
                 $ref: '#/components/schemas/CourseEvent'
-      description: ''
+      description: Get list of events for a specific course and university.
 components:
   schemas:
     University:

@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: EventsService
   version: '1.0'
-  description: ''
+  description: Service used in order to create Google Calendar events inside of the user Calendar. Not exposed outside to the outside.
 servers:
   - url: 'http://localhost:8082'
 paths:
@@ -13,15 +13,11 @@ paths:
       responses:
         '200':
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Event'
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Event'
+              $ref: '#/components/schemas/EventCreation'
           application/xml:
             schema:
               $ref: '#/components/schemas/EventCreation'
@@ -29,7 +25,7 @@ paths:
             schema:
               $ref: '#/components/schemas/EventCreation'
       security:
-        - Google oAuth: []
+        - Google OAuth 2.0: []
       description: |-
         Create a new event in the Google Calendar.
         The Google token of the user is given in the Authorization header of the request.
@@ -53,8 +49,8 @@ components:
           type: string
         asynchronous:
           type: boolean
-        university:
-          $ref: ./UniversitiesGatewayServices.v1.yaml#/components/schemas/University
+        universityId:
+          type: number
         course:
           type: string
         bgColor:
@@ -65,10 +61,10 @@ components:
         - name
         - startTime
         - endTime
-        - university
+        - universityId
         - course
   securitySchemes:
-    Google oAuth:
+    Google OAuth 2.0:
       type: oauth2
       description: ''
 security:

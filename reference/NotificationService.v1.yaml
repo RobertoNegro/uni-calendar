@@ -2,6 +2,7 @@ openapi: 3.0.0
 info:
   title: NotificationService
   version: '1.0'
+  description: Service used in order to send notifications to the users. Not exposed outside to the outside.
 servers:
   - url: 'http://localhost:8084'
 paths:
@@ -9,7 +10,9 @@ paths:
     post:
       summary: Send a Telegram notification
       operationId: post-telegram
-      description: 'Send a Telegram notification '
+      description: |-
+        Send a Telegram notification to the user.
+        The Google token of the user is given in the Authorization header of the request.
       requestBody:
         content:
           application/json:
@@ -48,6 +51,11 @@ paths:
             schema:
               $ref: '#/components/schemas/EmailNotification'
         description: ''
+      description: |-
+        Send an email to the user.
+        The Google token of the user is given in the Authorization header of the request.
+      security:
+        - Google OAuth 2.0: []
 components:
   schemas:
     TelegramNotification:
@@ -56,29 +64,21 @@ components:
       description: ''
       x-examples: {}
       properties:
-        to:
-          description: Unique identifier for the given user.
-          type: string
         message:
           type: string
-        event:
-          $ref: ./CalendarService.v1.yaml#/components/schemas/Event
       required:
-        - to
         - message
     EmailNotification:
       title: EmailNotification
       type: object
       properties:
-        to:
-          type: string
         message:
           type: string
         subject:
           type: string
-        event:
-          $ref: ./CalendarService.v1.yaml#/components/schemas/Event
       required:
-        - to
         - message
         - subject
+  securitySchemes:
+    Google OAuth 2.0:
+      type: oauth2

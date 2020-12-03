@@ -1,14 +1,15 @@
 openapi: 3.0.0
 info:
-  title: GatewaysServices
+  title: UniversitiesGatewayServices
   version: '1.0'
+  description: Used to obtain a list of the available university gateways and redirect the requests to the correct gateway. ßNot exposed outside to the outside.
 servers:
   - url: 'http://localhost:8083'
 paths:
   /universities:
     parameters: []
     get:
-      summary: Get list of universities
+      summary: List of universities
       operationId: get-universities
       responses:
         '200':
@@ -19,6 +20,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/University'
+      description: Obtain a list of universities available.
   /university:
     post:
       summary: Add a new University
@@ -30,16 +32,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/University'
-      security:
-        - Admin Key: []
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/UniversityCreation'
+      description: Used to register a new university gateway. This endpoint will be automatically called as soon as a gateway start.
   'university/{id}/courses':
     get:
-      summary: Your GET endpoint
+      summary: List of courses for a specific university
       tags: []
       responses:
         '200':
@@ -50,7 +51,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Course'
-      operationId: 'get-courses-:id'
+      operationId: get-courses
+      description: Obtain a list of courses of a specific university given by its ID.
     parameters:
       - schema:
           type: string
@@ -70,7 +72,7 @@ paths:
         in: path
         required: true
     get:
-      summary: Your GET endpoint
+      summary: Get schedules for a specific course and university
       tags: []
       responses: {}
       operationId: get-university-id-course-id
@@ -81,6 +83,7 @@ paths:
               type: array
               items:
                 $ref: '#/components/schemas/CourseEvent'
+      description: ''
 components:
   schemas:
     University:
@@ -154,7 +157,4 @@ components:
         - endTime
         - university
         - course
-  securitySchemes:
-    Admin Key:
-      type: http
-      scheme: basic
+  securitySchemes: {}

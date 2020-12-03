@@ -2,6 +2,7 @@ openapi: 3.0.0
 info:
   title: UniTNGatewayService
   version: '1.0'
+  description: Gateway for obtaining courses and schedules of courses of Università degli Studi di Trento. Not exposed outside to the outside.
 servers:
   - url: 'http://localhost:3000'
 paths:

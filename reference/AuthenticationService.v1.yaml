@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: AuthenticationService
   version: '1.0'
-  description: Service used for user authentication
+  description: Service used for user authentication (via Google OAuth 2.0). Accessible from the outside.
 servers:
   - url: 'http://localhost:8081'
 paths:
@@ -26,8 +26,8 @@ paths:
           description: Temporary Redirect
       operationId: get-google-callback
       description: |-
-        Does the redirect to "error page" or "authenticated page" (and saves the google id into the db).
-        Request body depends on google oauth results (error or user data), but are managed directly by PassportJS.
+        Redirect the user to "error page" or "authenticated page" (and saves the google id into the db).
+        Request body depends on Google OAuth Results (error or user data), but they are managed directly by PassportJS.
         See http://www.passportjs.org/docs/google/#oauth-2-0 (see Oauth 2.0, NOT 1.0)
 components:
   schemas:

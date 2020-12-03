@@ -1,0 +1,65 @@
+openapi: 3.0.0
+info:
+  title: UniBZGatewayService
+  version: '1.0'
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /courses:
+    get:
+      summary: Get list of courses
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+      operationId: get-courses
+  '/course/{id}':
+    get:
+      summary: Get course events by course ID
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ./CalendarService.v1.yaml#/components/schemas/EventCreation
+      operationId: get-course
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+        description: Course ID
+components:
+  schemas:
+    Course:
+      description: ''
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 1
+        name:
+          type: string
+          minLength: 1
+        professor:
+          type: string
+          minLength: 1
+        university:
+          type: string
+          minLength: 1
+      required:
+        - id
+        - name
+        - professor
+        - university

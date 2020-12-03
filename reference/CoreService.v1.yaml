@@ -1,0 +1,52 @@
+openapi: 3.0.0
+info:
+  title: CoreService.v1
+  version: '1.0'
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /calendar/update:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-updateCalendar
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+      security:
+        - Google Oauth: []
+    parameters: []
+  /calendar/settings:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-user-settings
+      security:
+        - Google Oauth: []
+    parameters: []
+    post:
+      summary: ''
+      operationId: post-calendar-settings
+      responses:
+        '200':
+          description: OK
+      security:
+        - Google Oauth: []
+  /user/settings:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-user-settings
+      security:
+        - Google Oauth: []
+components:
+  schemas: {}
+  securitySchemes:
+    Google Oauth:
+      type: oauth2

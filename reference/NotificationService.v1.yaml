@@ -56,26 +56,22 @@ components:
       description: ''
       x-examples: {}
       properties:
-        user_ids:
-          type: array
+        to:
           description: Unique identifier for the given user.
-          items:
-            type: integer
+          type: string
         message:
           type: string
         event:
           $ref: ./CalendarService.v1.yaml#/components/schemas/Event
       required:
-        - user_ids
+        - to
         - message
     EmailNotification:
       title: EmailNotification
       type: object
       properties:
-        user_ids:
-          type: array
-          items:
-            type: number
+        to:
+          type: string
         message:
           type: string
         subject:
@@ -83,6 +79,6 @@ components:
         event:
           $ref: ./CalendarService.v1.yaml#/components/schemas/Event
       required:
-        - user_ids
+        - to
         - message
         - subject

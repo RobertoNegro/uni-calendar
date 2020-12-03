@@ -37,6 +37,35 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UniversityCreation'
+  'university/{id}/courses':
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: 'get-courses-:id'
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+  '/university/{universityId}/course/{courseId}':
+    parameters:
+      - schema:
+          type: string
+        name: universityId
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: courseId
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-university-id-course-id
 components:
   schemas:
     University:

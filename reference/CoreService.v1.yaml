@@ -167,11 +167,11 @@ components:
         notifyTelegram:
           type: boolean
         notifyEmail:
-          type: boolean
+          type: string
       required:
+        - id
         - universityId
         - courseId
-        - id
     CourseSettingsCreation:
       title: CourseSettingsCreation
       type: object
@@ -193,7 +193,7 @@ components:
         notifyTelegram:
           type: boolean
         notifyEmail:
-          type: boolean
+          type: string
       required:
         - universityId
         - courseId

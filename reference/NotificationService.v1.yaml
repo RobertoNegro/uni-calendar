@@ -36,9 +36,7 @@ paths:
         Used for the elaborations of the user inputs in the bot and generation of responses.
 
         /start <user_token> will associate the user id by which <user_token> belongs to the chat.id received from Telegram API.
-        /stop will remove that association
-
-        A single user can have multiple active instances.
+        /stop will remove that association.
     parameters: []
   /email:
     post:

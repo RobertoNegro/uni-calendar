@@ -17,7 +17,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Course'
+                  $ref: ./UniversitiesGatewayServices.v1.yaml#/components/schemas/Course
       operationId: get-courses
   '/course/{id}':
     get:
@@ -31,7 +31,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: ./CalendarService.v1.yaml#/components/schemas/EventCreation
+                  $ref: ./UniversitiesGatewayServices.v1.yaml#/components/schemas/CourseEvent
       operationId: get-course
     parameters:
       - schema:
@@ -41,25 +41,4 @@ paths:
         required: true
         description: Course ID
 components:
-  schemas:
-    Course:
-      description: ''
-      type: object
-      properties:
-        id:
-          type: string
-          minLength: 1
-        name:
-          type: string
-          minLength: 1
-        professor:
-          type: string
-          minLength: 1
-        university:
-          type: string
-          minLength: 1
-      required:
-        - id
-        - name
-        - professor
-        - university
+  schemas: {}

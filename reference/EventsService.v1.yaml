@@ -25,9 +25,14 @@ paths:
           application/xml:
             schema:
               $ref: '#/components/schemas/EventCreation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EventCreation'
       security:
-        - JWT Token: []
-      description: Create a new event in the Google Calendar
+        - Google oAuth: []
+      description: |-
+        Create a new event in the Google Calendar.
+        The Google token of the user is given in the Authorization header of the request.
 components:
   schemas:
     EventCreation:
@@ -42,17 +47,19 @@ components:
           type: number
         endTime:
           type: number
-        url:
+        link:
           type: string
         location:
           type: string
         asynchronous:
           type: boolean
         university:
-          type: string
+          $ref: ./UniversitiesGatewayServices.v1.yaml#/components/schemas/University
         course:
           type: string
-        googleToken:
+        bgColor:
+          type: string
+        fgColor:
           type: string
       required:
         - name
@@ -60,9 +67,8 @@ components:
         - endTime
         - university
         - course
-        - googleToken
   securitySchemes:
-    JWT Token:
+    Google oAuth:
       type: oauth2
       description: ''
 security:

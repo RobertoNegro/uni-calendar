@@ -11,31 +11,24 @@ paths:
       summary: Google OAuth
       operationId: post-google-login
       responses:
-        '200':
-          description: OK
+        '307':
+          description: Temporary Redirect
       description: |-
-        Does the redirect to Google Login page
-
-        Used to perform the login of the user via Google OAuth
-        @See http://www.passportjs.org/docs/google/
+        Used to perform the login of the user via Google OAuth, it will redirect the user to Google Login page.
+        See http://www.passportjs.org/docs/google/#oauth-2-0 (see Oauth 2.0, NOT 1.0)
     parameters: []
   /google/callback:
     get:
-      summary: Your GET endpoint
+      summary: Google OAuth Callback
       tags: []
       responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties: {}
+        '307':
+          description: Temporary Redirect
       operationId: get-google-callback
       description: |-
-        Does the redirect to "error page" or "authenticated page" (and saves the google id into the db)
-
-        Request body depends on google oauth results (error or user data)
+        Does the redirect to "error page" or "authenticated page" (and saves the google id into the db).
+        Request body depends on google oauth results (error or user data), but are managed directly by PassportJS.
+        See http://www.passportjs.org/docs/google/#oauth-2-0 (see Oauth 2.0, NOT 1.0)
 components:
   schemas:
     User:
@@ -43,13 +36,7 @@ components:
       type: object
       title: User
       properties:
-        id:
-          type: number
-        username:
-          type: string
         email:
-          type: string
-        password:
           type: string
         googleId:
           type: string
@@ -58,19 +45,18 @@ components:
         firstName:
           type: string
         university:
+          $ref: ./UniversitiesGatewayServices.v1.yaml#/components/schemas/University
+        id:
+          type: number
+        picture:
           type: string
-        confirmed:
-          type: boolean
-        confirmationToken:
+        telegramToken:
           type: string
       required:
-        - username
         - email
-        - password
         - googleId
         - lastName
         - firstName
         - university
-        - confirmed
-        - confirmationToken
+        - id
   securitySchemes: {}

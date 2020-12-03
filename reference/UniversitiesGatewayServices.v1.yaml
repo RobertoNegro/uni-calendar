@@ -41,7 +41,15 @@ paths:
     get:
       summary: Your GET endpoint
       tags: []
-      responses: {}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
       operationId: 'get-courses-:id'
     parameters:
       - schema:
@@ -66,6 +74,13 @@ paths:
       tags: []
       responses: {}
       operationId: get-university-id-course-id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CourseEvent'
 components:
   schemas:
     University:
@@ -96,6 +111,49 @@ components:
       required:
         - shortName
         - fullName
+    Course:
+      description: ''
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 1
+        name:
+          type: string
+          minLength: 1
+        professor:
+          type: string
+          minLength: 1
+        university:
+          type: string
+          minLength: 1
+      required:
+        - id
+        - name
+        - professor
+        - university
+    CourseEvent:
+      title: CourseEvent
+      type: object
+      properties:
+        name:
+          type: string
+        startTime:
+          type: number
+        endTime:
+          type: number
+        location:
+          type: string
+        university:
+          $ref: ./UniversitiesGatewayServices.v1.yaml#/components/schemas/University
+        course:
+          type: string
+      required:
+        - name
+        - startTime
+        - endTime
+        - university
+        - course
   securitySchemes:
     Admin Key:
       type: http

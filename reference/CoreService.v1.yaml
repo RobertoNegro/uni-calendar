@@ -7,7 +7,7 @@ servers:
 paths:
   /calendar/update:
     get:
-      summary: Your GET endpoint
+      summary: Update user calendar
       tags: []
       responses: {}
       operationId: get-updateCalendar
@@ -19,6 +19,7 @@ paths:
               properties: {}
       security:
         - Google Oauth: []
+      description: Trigger the update of the user calendar. The user is identified by its Google token in the Authorization header of the request.
     parameters: []
   /calendar/settings:
     get:
@@ -39,12 +40,13 @@ paths:
         - Google Oauth: []
   /user/settings:
     get:
-      summary: Your GET endpoint
+      summary: Set user settings
       tags: []
       responses: {}
       operationId: get-user-settings
       security:
         - Google Oauth: []
+      description: ''
 components:
   schemas: {}
   securitySchemes:

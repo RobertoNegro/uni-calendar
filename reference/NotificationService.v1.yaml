@@ -22,6 +22,8 @@ paths:
       responses:
         '200':
           description: OK
+      security:
+        - Google OAuth 2.0: []
     parameters: []
   /telegram/bot:
     post:

@@ -3,7 +3,7 @@ WORKDIR /www
 ENV NODE_ENV development
 COPY package.json .
 COPY yarn.lock .
-RUN npm install
+RUN yarn install
 COPY . .
 CMD ["yarn", "run", "start"]
 EXPOSE 80

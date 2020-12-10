@@ -38,7 +38,7 @@ paths:
             schema:
               $ref: '#/components/schemas/UniversityCreation'
       description: Used to register a new university gateway. This endpoint will be automatically called as soon as a gateway start.
-  'university/{id}/courses':
+  'university/{slug}/courses':
     get:
       summary: List of courses for a specific university
       tags: []
@@ -52,23 +52,23 @@ paths:
                 items:
                   $ref: '#/components/schemas/Course'
       operationId: get-courses
-      description: Obtain a list of courses of a specific university given by its ID.
+      description: Obtain a list of courses of a specific university given by its slug.
     parameters:
       - schema:
           type: string
-        name: id
+        name: slug
         in: path
         required: true
-  '/university/{universityId}/course/{courseId}':
+  '/university/{universitySlug}/course/{courseId}':
     parameters:
-      - schema:
-          type: string
-        name: universityId
-        in: path
-        required: true
       - schema:
           type: string
         name: courseId
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: universitySlug
         in: path
         required: true
     get:
@@ -90,8 +90,8 @@ components:
       description: ''
       type: object
       properties:
-        id:
-          type: number
+        slug:
+          type: string
         shortName:
           type: string
         fullName:
@@ -99,7 +99,7 @@ components:
         serverURI:
           type: string
       required:
-        - id
+        - slug
         - shortName
         - fullName
         - serverURI
@@ -107,11 +107,14 @@ components:
       title: UniversityCreation
       type: object
       properties:
+        slug:
+          type: string
         shortName:
           type: string
         fullName:
           type: string
       required:
+        - slug
         - shortName
         - fullName
     Course:

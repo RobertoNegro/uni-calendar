@@ -49,8 +49,8 @@ components:
           type: string
         asynchronous:
           type: boolean
-        universityId:
-          type: number
+        universitySlug:
+          type: string
         course:
           type: string
         bgColor:
@@ -61,7 +61,7 @@ components:
         - name
         - startTime
         - endTime
-        - universityId
+        - universitySlug
         - course
   securitySchemes:
     Google OAuth 2.0:

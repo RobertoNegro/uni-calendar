@@ -102,8 +102,8 @@ components:
       properties:
         id:
           type: number
-        universityId:
-          type: string
+        university:
+          $ref: ./UniversitiesGatewayServices.v1.yaml#/components/schemas/University
         courseId:
           type: string
         asyncronous:
@@ -122,13 +122,13 @@ components:
           type: string
       required:
         - id
-        - universityId
+        - university
         - courseId
     CourseSettingsCreation:
       title: CourseSettingsCreation
       type: object
       properties:
-        universityId:
+        universitySlug:
           type: string
         courseId:
           type: string
@@ -147,5 +147,5 @@ components:
         notifyEmail:
           type: string
       required:
-        - universityId
+        - universitySlug
         - courseId

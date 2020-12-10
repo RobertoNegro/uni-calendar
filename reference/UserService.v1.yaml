@@ -17,7 +17,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserSettings'
+                $ref: '#/components/schemas/UserSettingsGet'
       operationId: get-user-settings
       security:
         - Google OAuth 2.0: []
@@ -28,27 +28,31 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSettingsGet'
       security:
         - Google OAuth 2.0: []
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserSettings'
+              $ref: '#/components/schemas/UserSettingsSet'
       description: Set the user settings. The Google token of the user is given in the Authorization header of the request.
 components:
   securitySchemes:
     Google OAuth 2.0:
       type: oauth2
   schemas:
-    GetUserSettings:
-      title: GetUserSettings
+    UserSettingsGet:
+      title: UserSettingsGet
       type: object
       properties:
         university:
           $ref: ./UniversitiesGatewayServices.v1.yaml#/components/schemas/University
-    SetUserSettings:
-      title: SetUserSettings
+    UserSettingsSet:
+      title: UserSettingsSet
       type: object
       properties:
         universitySlug:

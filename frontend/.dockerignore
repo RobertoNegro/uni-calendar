@@ -5,3 +5,4 @@ node_modules
 .history
 .eslintcache
 src/models
+.git

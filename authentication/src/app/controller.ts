@@ -9,28 +9,26 @@
  *   by the domain of the operation.
  */
 
-import { Request, Response } from 'express';
+import {NextFunction, Request, Response} from 'express';
 
-import {
-  getHello,
-} from './core';
+const passport = require('passport');
 
-// --- EXAMPLE ---
-
-export const hello = (req: Request, res: Response) => {
-  // If in the URL (GET request) e.g. localhost:8080/?name=pippo
-  const name = req.query['name'];
-
-  // If in body of the request (as json or form-data)
-  // const name = req.body['name'];
-
-  // If in the URL as a parameter e.g. localhost:8080/pippo/ and route defined as '/:name'
-  // const name = req.params['name'];
-
-  if (name != null && typeof name === 'string') {
-    res.send(getHello(name));
-  } else {
-    res.status(400);
-    res.send({ error: 'Invalid name format!' });
-  }
+export const oAuth = (req: Request, res: Response, next: NextFunction) => {
+    passport.authenticate('google', {session: false, scope: ['profile', 'email']})(req, res, next);
 };
+export const oAuthCallBack = (req: Request, res: Response, next: NextFunction) => {
+    passport.authenticate('google', {
+        session: false,
+        failureRedirect: '/error'
+    }, (error: any, user: any) => {
+        res.cookie("sessionToken", JSON.stringify({accessToken: user.accessToken}))
+        res.redirect('/success');
+    })(req, res, next)
+};
+
+export const authSuccess = (req: Request, res: Response) => {
+    res.send("user logging in")
+}
+export const authError = (req: Request, res: Response) => {
+    res.send("error logging in")
+}

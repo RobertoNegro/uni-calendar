@@ -41,9 +41,15 @@ components:
     Google OAuth 2.0:
       type: oauth2
   schemas:
-    UserSettings:
-      title: UserSettings
+    GetUserSettings:
+      title: GetUserSettings
       type: object
       properties:
-        universityId:
-          type: number
+        university:
+          $ref: ./UniversitiesGatewayServices.v1.yaml#/components/schemas/University
+    SetUserSettings:
+      title: SetUserSettings
+      type: object
+      properties:
+        universitySlug:
+          type: string

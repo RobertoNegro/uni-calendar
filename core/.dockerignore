@@ -3,3 +3,5 @@ node_modules
 .vscode
 *.code-workspace
 .history
+src/models
+build

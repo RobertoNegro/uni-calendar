@@ -17,7 +17,9 @@ import {
 const router = express.Router();
 
 
-router.get('/', hello); // Example
+router.get('/info', hello);
+router.get('/courses', hello);
+router.get('/courses/:id', hello);
 
 
 export default router;

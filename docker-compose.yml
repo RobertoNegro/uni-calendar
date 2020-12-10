@@ -2,109 +2,111 @@ version: "3.8"
 
 services:
 
+  # =========================
+  # === INTERNAL SERVICES ===
+  # =========================
+
   db:
     image: postgres
+    ports:
+      - 8999:5432 # Exposed just for debug purposes!
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: unicalendar_db
-    ports:
-      - 8999:5432
-    networks:
-      app_net:
-        ipv4_address: 172.20.0.254
 
-  frontend:
+  notification:
     build:
-      context: ./frontend
-    ports:
-      - 8081:3000
-    networks:
-      app_net:
-        ipv4_address: 172.20.0.10
+      context: ./notification
     volumes:
       - /www/node_modules
-      - ./frontend:/www
+      - ./notification:/www
+      - ./models:/www/src/models
+
+  unitn_gateway:
+    build:
+      context: ./unitn-gateway
+    volumes:
+      - /www/node_modules
+      - ./unitn-gateway:/www
+      - ./models:/www/src/models
+
+  unibz_gateway:
+    build:
+      context: ./unibz-gateway
+    volumes:
+      - /www/node_modules
+      - ./unibz-gateway:/www
+      - ./models:/www/src/models
+
+  calendar:
+    build:
+      context: ./calendar
+    volumes:
+      - /www/node_modules
+      - ./calendar:/www
+      - ./models:/www/src/models
+
+
+  # ========================
+  # === PROXIED SERVICES ===
+  # ========================
+
+  authentication:
+    build:
+      context: ./authentication
+    volumes:
+      - /www/node_modules
+      - ./authentication:/www
+      - ./models:/www/src/models
+
+  universitites_gateway:
+    build:
+      context: ./universities-gateway
+    volumes:
+      - /www/node_modules
+      - ./universities-gateway:/www
+      - ./models:/www/src/models
+
+  courses:
+    build:
+      context: ./courses
+    volumes:
+      - /www/node_modules
+      - ./courses:/www
+      - ./models:/www/src/models
+
+  user:
+    build:
+      context: ./user
+    volumes:
+      - /www/node_modules
+      - ./user:/www
+      - ./models:/www/src/models
+
+
+  # ========================
+  # === EXPOSED SERVICES ===
+  # ========================
 
   core:
     build:
       context: ./core
     ports:
       - 8082:80
-    networks:
-      app_net:
-        ipv4_address: 172.20.0.20
     volumes:
       - /www/node_modules
       - ./core:/www
+      - ./models:/www/src/models
 
-  events:
+  frontend:
     build:
-      context: ./events
+      context: ./frontend
     ports:
-      - 8083:80
-    networks:
-      app_net:
-        ipv4_address: 172.20.0.30
+      - 8081:3000
     volumes:
       - /www/node_modules
-      - ./events:/www
-
-  authentication:
-    build:
-      context: ./authentication
-    ports:
-      - 8084:80
-    networks:
-      app_net:
-        ipv4_address: 172.20.0.40
-    volumes:
-      - /www/node_modules
-      - ./authentication:/www
-
-
-  notification:
-    build:
-      context: ./notification
-    ports:
-      - 8085:80
-    networks:
-      app_net:
-        ipv4_address: 172.20.0.50
-    volumes:
-      - /www/node_modules
-      - ./notification:/www
-
-  universitites_gateway:
-    build:
-      context: ./universities-gateway
-    ports:
-      - 8086:80
-    networks:
-      app_net:
-        ipv4_address: 172.20.0.60
-    volumes:
-      - /www/node_modules
-      - ./universities-gateway:/www
-
-  unitn_gateway:
-    build:
-      context: ./unitn-gateway
-    ports:
-      - 8087:80
-    networks:
-      app_net:
-        ipv4_address: 172.20.0.70
-    volumes:
-      - /www/node_modules
-      - ./unitn-gateway:/www
-
-
-networks:
-  app_net:
-    ipam:
-      driver: default
-      config:
-        - subnet: "172.20.0.0/24"
+      - ./frontend:/www
+      - ./models:/www/src/models

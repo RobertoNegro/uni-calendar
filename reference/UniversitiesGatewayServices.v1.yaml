@@ -131,8 +131,7 @@ components:
           type: string
           minLength: 1
         university:
-          type: string
-          minLength: 1
+          $ref: '#/components/schemas/University'
       required:
         - id
         - name

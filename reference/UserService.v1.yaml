@@ -1,0 +1,49 @@
+openapi: 3.0.0
+info:
+  title: UserService
+  version: '1.0'
+  description: |-
+    Manage the user settings.
+    The Google token of the user is given in the Authorization header of the request.
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /user/settings:
+    get:
+      summary: Get user settings
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSettings'
+      operationId: get-user-settings
+      security:
+        - Google OAuth 2.0: []
+      description: Get the user settings. The Google token of the user is given in the Authorization header of the request.
+    post:
+      summary: Set user settings
+      operationId: post-user-settings
+      responses:
+        '200':
+          description: OK
+      security:
+        - Google OAuth 2.0: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSettings'
+      description: Set the user settings. The Google token of the user is given in the Authorization header of the request.
+components:
+  securitySchemes:
+    Google OAuth 2.0:
+      type: oauth2
+  schemas:
+    UserSettings:
+      title: UserSettings
+      type: object
+      properties:
+        universityId:
+          type: number

@@ -5,11 +5,24 @@ info:
   description: |-
     The process centric service that manage the different tasks of UniCalendar.
 
-    In particular, some of its endpoints are not exposed but instead they're used internally as scheduled tasks.
+    In particular, it will redirect the requests to the other services when needed.
+    Some of its endpoints are not exposed but instead they're used internally as scheduled tasks.
 servers:
   - url: 'http://localhost:3000'
 paths:
-  /calendar/update:
+  /process/notify:
+    get:
+      summary: Trigger user notifications
+      tags: []
+      responses:
+        '200':
+          description: OK
+      operationId: get-user-notify
+      description: Trigger the sending of notifications (if needed) of the user events. The user is identified by its Google token in the Authorization header of the request. Also time-scheduled.
+      security:
+        - Google OAuth 2.0: []
+    parameters: []
+  /process/update:
     get:
       summary: Trigger update user calendar
       tags: []
@@ -21,188 +34,8 @@ paths:
         - Google OAuth 2.0: []
       description: Trigger the update of the user calendar. The user is identified by its Google token in the Authorization header of the request. Also time-scheduled.
     parameters: []
-  /calendar/courses:
-    parameters: []
-    get:
-      summary: List followed courses
-      operationId: get-calendar-courses
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/CourseSettings'
-      description: Get the list of the followed courses. The Google token of the user is given in the Authorization header of the request.
-      security:
-        - Google OAuth 2.0: []
-    post:
-      summary: Add followed course
-      operationId: post-calendar-courses
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CourseSettings'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CourseSettingsCreation'
-      security:
-        - Google OAuth 2.0: []
-      description: Add a course to the followed courses list. The Google token of the user is given in the Authorization header of the request.
-  /user/settings:
-    get:
-      summary: Get user settings
-      tags: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserSettings'
-      operationId: get-user-settings
-      security:
-        - Google OAuth 2.0: []
-      description: Get the user settings. The Google token of the user is given in the Authorization header of the request.
-    post:
-      summary: Set user settings
-      operationId: post-user-settings
-      responses:
-        '200':
-          description: OK
-      security:
-        - Google OAuth 2.0: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserSettings'
-      description: Set the user settings. The Google token of the user is given in the Authorization header of the request.
-  /user/notify:
-    get:
-      summary: Trigger user notifications
-      tags: []
-      responses: {}
-      operationId: get-user-notify
-      description: Trigger the sending of notifications (if needed) of the user events. The user is identified by its Google token in the Authorization header of the request. Also time-scheduled.
-      security:
-        - Google OAuth 2.0: []
-  '/calendar/course/{id}':
-    parameters:
-      - schema:
-          type: string
-        name: id
-        in: path
-        required: true
-    get:
-      summary: Get followed course
-      tags: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CourseSettings'
-      operationId: get-calendar-courses-id
-      description: Get the details of a followed course. The Google token of the user is given in the Authorization header of the request.
-      security:
-        - Google OAuth 2.0: []
-    delete:
-      summary: Delete followed course
-      operationId: delete-calendar-course-id
-      responses:
-        '200':
-          description: OK
-      description: Delete the course from the followed courses. The Google token of the user is given in the Authorization header of the request.
-      security:
-        - Google OAuth 2.0: []
-    put:
-      summary: Update followed course
-      operationId: put-calendar-course-id
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CourseSettings'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CourseSettingsCreation'
-      description: Update the followed course settings. The Google token of the user is given in the Authorization header of the request.
-      security:
-        - Google OAuth 2.0: []
 components:
-  schemas:
-    CourseSettings:
-      title: CourseSettings
-      type: object
-      properties:
-        id:
-          type: number
-        universityId:
-          type: string
-        courseId:
-          type: string
-        asyncronous:
-          type: boolean
-        link:
-          type: string
-        bgColor:
-          type: string
-        fgColor:
-          type: string
-        notifyBefore:
-          type: number
-        notifyTelegram:
-          type: boolean
-        notifyEmail:
-          type: string
-      required:
-        - id
-        - universityId
-        - courseId
-    CourseSettingsCreation:
-      title: CourseSettingsCreation
-      type: object
-      properties:
-        universityId:
-          type: string
-        courseId:
-          type: string
-        asyncronous:
-          type: boolean
-        link:
-          type: string
-        bgColor:
-          type: string
-        fgColor:
-          type: string
-        notifyBefore:
-          type: number
-        notifyTelegram:
-          type: boolean
-        notifyEmail:
-          type: string
-      required:
-        - universityId
-        - courseId
-    UserSettings:
-      title: UserSettings
-      type: object
-      properties:
-        universityId:
-          type: number
+  schemas: {}
   securitySchemes:
     Google OAuth 2.0:
       type: oauth2

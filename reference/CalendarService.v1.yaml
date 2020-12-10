@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: EventsService
+  title: CalendarService
   version: '1.0'
   description: Service used in order to create Google Calendar events inside of the user Calendar. Not exposed outside to the outside.
 servers:

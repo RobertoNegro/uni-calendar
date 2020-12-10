@@ -1,7 +1,7 @@
 {
-  "name": "calendar",
+  "name": "events",
   "version": "1.0.0",
-  "description": "UniCalendar | Calendar service",
+  "description": "UniCalendar | Events service",
   "main": "build/index.js",
   "scripts": {
     "start": "tsc-watch --onSuccess \"node build/index.js\""

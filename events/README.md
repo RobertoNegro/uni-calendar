@@ -1,1 +1,1 @@
-# Calendar Service
+# Events Service

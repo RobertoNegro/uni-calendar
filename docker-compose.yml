@@ -27,6 +27,7 @@ services:
     volumes:
       - /www/node_modules
       - ./frontend:/www
+      - ./models:/www/src/models
 
   core:
     build:
@@ -39,6 +40,7 @@ services:
     volumes:
       - /www/node_modules
       - ./core:/www
+      - ./models:/www/src/models
 
   events:
     build:
@@ -51,6 +53,7 @@ services:
     volumes:
       - /www/node_modules
       - ./events:/www
+      - ./models:/www/src/models
 
   authentication:
     build:
@@ -63,7 +66,7 @@ services:
     volumes:
       - /www/node_modules
       - ./authentication:/www
-
+      - ./models:/www/src/models
 
   notification:
     build:
@@ -76,6 +79,7 @@ services:
     volumes:
       - /www/node_modules
       - ./notification:/www
+      - ./models:/www/src/models
 
   universitites_gateway:
     build:
@@ -88,6 +92,7 @@ services:
     volumes:
       - /www/node_modules
       - ./universities-gateway:/www
+      - ./models:/www/src/models
 
   unitn_gateway:
     build:
@@ -100,7 +105,7 @@ services:
     volumes:
       - /www/node_modules
       - ./unitn-gateway:/www
-
+      - ./models:/www/src/models
 
 networks:
   app_net:

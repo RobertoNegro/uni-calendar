@@ -43,5 +43,18 @@ paths:
         in: path
         required: true
         description: Course ID
+  /info:
+    get:
+      summary: Get university's info
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ./UniversitiesGatewayServices.v1.yaml#/components/schemas/UniversityCreation
+      operationId: get-info
+      description: Get the university's info.
 components:
   schemas: {}

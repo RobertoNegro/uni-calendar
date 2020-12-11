@@ -20,33 +20,33 @@ services:
   notification:
     build:
       context: ./notification
+      dockerfile: ./Dockerfile.dev
     volumes:
-      - /www/node_modules
-      - ./notification:/www
+      - notification_node_modules:/www/node_modules
       - ./models:/www/src/models
 
   unitn_gateway:
     build:
       context: ./unitn-gateway
+      dockerfile: ./Dockerfile.dev
     volumes:
-      - /www/node_modules
-      - ./unitn-gateway:/www
+      - unitn_gateway_node_modules:/www/node_modules
       - ./models:/www/src/models
 
   unibz_gateway:
     build:
       context: ./unibz-gateway
+      dockerfile: ./Dockerfile.dev
     volumes:
-      - /www/node_modules
-      - ./unibz-gateway:/www
+      - unibz_gateway_node_modules:/www/node_modules
       - ./models:/www/src/models
 
   calendar:
     build:
       context: ./calendar
+      dockerfile: ./Dockerfile.dev
     volumes:
-      - /www/node_modules
-      - ./calendar:/www
+      - calendar_node_modules:/www/node_modules
       - ./models:/www/src/models
 
 
@@ -57,33 +57,33 @@ services:
   authentication:
     build:
       context: ./authentication
+      dockerfile: ./Dockerfile.dev
     volumes:
-      - /www/node_modules
-      - ./authentication:/www
+      - authentication_node_modules:/www/node_modules
       - ./models:/www/src/models
 
   universitites_gateway:
     build:
       context: ./universities-gateway
+      dockerfile: ./Dockerfile.dev
     volumes:
-      - /www/node_modules
-      - ./universities-gateway:/www
+      - universitites_gateway_node_modules:/www/node_modules
       - ./models:/www/src/models
 
   courses:
     build:
       context: ./courses
+      dockerfile: ./Dockerfile.dev
     volumes:
-      - /www/node_modules
-      - ./courses:/www
+      - courses_node_modules:/www/node_modules
       - ./models:/www/src/models
 
   user:
     build:
       context: ./user
+      dockerfile: ./Dockerfile.dev
     volumes:
-      - /www/node_modules
-      - ./user:/www
+      - user_node_modules:/www/node_modules
       - ./models:/www/src/models
 
 
@@ -94,19 +94,31 @@ services:
   core:
     build:
       context: ./core
+      dockerfile: ./Dockerfile.dev
     ports:
       - 8082:80
     volumes:
-      - /www/node_modules
-      - ./core:/www
+      - core_node_modules:/www/node_modules
       - ./models:/www/src/models
 
   frontend:
     build:
       context: ./frontend
+      dockerfile: ./Dockerfile.dev
     ports:
       - 8081:3000
     volumes:
-      - /www/node_modules
-      - ./frontend:/www
+      - frontend_node_modules:/www/node_modules
       - ./models:/www/src/models
+
+volumes:
+  notification_node_modules:
+  unitn_gateway_node_modules:
+  unibz_gateway_node_modules:
+  calendar_node_modules:
+  authentication_node_modules:
+  universitites_gateway_node_modules:
+  courses_node_modules:
+  user_node_modules:
+  core_node_modules:
+  frontend_node_modules:

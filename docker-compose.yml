@@ -23,6 +23,7 @@ services:
       dockerfile: ./Dockerfile.dev
     volumes:
       - notification_node_modules:/www/node_modules
+      - ./notification:/www
       - ./models:/www/src/models
 
   unitn_gateway:
@@ -31,6 +32,7 @@ services:
       dockerfile: ./Dockerfile.dev
     volumes:
       - unitn_gateway_node_modules:/www/node_modules
+      - ./unitn-gateway:/www
       - ./models:/www/src/models
 
   unibz_gateway:
@@ -39,6 +41,7 @@ services:
       dockerfile: ./Dockerfile.dev
     volumes:
       - unibz_gateway_node_modules:/www/node_modules
+      - ./unibz-gateway:/www
       - ./models:/www/src/models
 
   calendar:
@@ -47,6 +50,7 @@ services:
       dockerfile: ./Dockerfile.dev
     volumes:
       - calendar_node_modules:/www/node_modules
+      - ./calendar:/www
       - ./models:/www/src/models
 
 
@@ -60,6 +64,7 @@ services:
       dockerfile: ./Dockerfile.dev
     volumes:
       - authentication_node_modules:/www/node_modules
+      - ./authentication:/www
       - ./models:/www/src/models
 
   universitites_gateway:
@@ -68,6 +73,7 @@ services:
       dockerfile: ./Dockerfile.dev
     volumes:
       - universitites_gateway_node_modules:/www/node_modules
+      - ./universities-gateway:/www
       - ./models:/www/src/models
 
   courses:
@@ -76,6 +82,7 @@ services:
       dockerfile: ./Dockerfile.dev
     volumes:
       - courses_node_modules:/www/node_modules
+      - ./courses:/www
       - ./models:/www/src/models
 
   user:
@@ -84,6 +91,7 @@ services:
       dockerfile: ./Dockerfile.dev
     volumes:
       - user_node_modules:/www/node_modules
+      - ./user:/www
       - ./models:/www/src/models
 
 
@@ -99,6 +107,7 @@ services:
       - 8082:80
     volumes:
       - core_node_modules:/www/node_modules
+      - ./core:/www
       - ./models:/www/src/models
 
   frontend:
@@ -109,6 +118,7 @@ services:
       - 8081:3000
     volumes:
       - frontend_node_modules:/www/node_modules
+      - ./frontend:/www
       - ./models:/www/src/models
 
 volumes:

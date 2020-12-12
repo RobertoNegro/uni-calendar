@@ -67,12 +67,12 @@ services:
       - ./authentication:/www
       - ./models:/www/src/models
 
-  universitites_gateway:
+  universities_gateway:
     build:
       context: ./universities-gateway
       dockerfile: ./Dockerfile.dev
     volumes:
-      - universitites_gateway_node_modules:/www/node_modules
+      - universities_gateway_node_modules:/www/node_modules
       - ./universities-gateway:/www
       - ./models:/www/src/models
 
@@ -127,7 +127,7 @@ volumes:
   unibz_gateway_node_modules:
   calendar_node_modules:
   authentication_node_modules:
-  universitites_gateway_node_modules:
+  universities_gateway_node_modules:
   courses_node_modules:
   user_node_modules:
   core_node_modules:

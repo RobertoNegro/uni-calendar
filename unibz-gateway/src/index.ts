@@ -21,6 +21,7 @@ const index = express();
 // Log stack trace of errors (to be used only on development phases!)
 index.use(errorHandler());
 // Log HTTP requests
+// @ts-ignore
 index.use(logger('dev'));
 // Compress all responses
 index.use(compression());
@@ -28,6 +29,7 @@ index.use(compression());
 index.use(bodyParser.json());
 index.use(bodyParser.urlencoded({ extended: true }));
 // Enable Cross-Origin Resource Sharing
+// @ts-ignore
 index.use(cors());
 
 // Uses router for all routes (we split the server logics and the routes definition)

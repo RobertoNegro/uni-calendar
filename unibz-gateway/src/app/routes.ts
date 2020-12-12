@@ -10,16 +10,13 @@
  */
 
 import express from 'express';
-import {
-  hello,
-} from './controller';
+import { triggerUpdateCache, info } from './controller';
 
 const router = express.Router();
 
-
-router.get('/info', hello);
-router.get('/courses', hello);
-router.get('/courses/:id', hello);
-
+router.get('/info', info);
+router.get('/updateCache', triggerUpdateCache);
+router.get('/courses', info);
+router.get('/courses/:id', info);
 
 export default router;

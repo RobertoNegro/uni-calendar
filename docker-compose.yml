@@ -39,6 +39,8 @@ services:
     build:
       context: ./unibz-gateway
       dockerfile: ./Dockerfile.dev
+    ports:
+      - 8088:80 # Exposed just for debug purposes!
     volumes:
       - unibz_gateway_node_modules:/www/node_modules
       - ./unibz-gateway:/www

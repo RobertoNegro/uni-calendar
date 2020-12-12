@@ -11,18 +11,19 @@
 
 import { Request, Response } from 'express';
 
-import { getHello } from './core';
+import { getInfo, updateCache } from './core';
 import config from '../config';
 
 export const info = (req: Request, res: Response) => {
-  res.send({
-    slug: config.slug,
-    fullName: config.fullName,
-    shortName: config.shortName,
-  });
+  res.send(getInfo());
 };
 
-export const info = (req: Request, res: Response) => {
+export const triggerUpdateCache = async (req: Request, res: Response) => {
+  const year = req.query['y'] ? parseInt(req.query['y'] as string) : new Date().getFullYear();
+  res.send(await updateCache(year));
+};
+
+export const course = (req: Request, res: Response) => {
   res.send({
     slug: config.slug,
     fullName: config.fullName,

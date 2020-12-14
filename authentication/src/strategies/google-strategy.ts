@@ -17,11 +17,8 @@ const passportConfig = {
 
 if (passportConfig.clientID) {
     passport.use(new GoogleStrategy(passportConfig, function (accessToken: string, refreshToken:string, profile: Profile, done:VerifyFunction){
-            // let user = users.getUserByExternalId('google', profile.id);
-            // if (!user) {
-            //     // They don't, so register them
-            //     user = users.createUser(profile.displayName, 'google', profile.id);
-            // }
+            // save into db the accessToken
+            // profile contains the user info
             const user = {accessToken: accessToken}
             return done(null, user);
         }

@@ -12,7 +12,7 @@ import {NextFunction, Request, Response} from 'express';
 const passport = require('passport');
 
 export const oAuth = (req: Request, res: Response, next: NextFunction) => {
-    passport.authenticate('google', {session: false, scope: ['profile', 'email']})(req, res, next);
+    passport.authenticate('google', {session: false, scope: ['profile', 'https://www.googleapis.com/auth/calendar']})(req, res, next);
 };
 export const oAuthCallBack = (req: Request, res: Response, next: NextFunction) => {
     passport.authenticate('google', {

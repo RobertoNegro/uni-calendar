@@ -5,8 +5,6 @@
  *   and outputs, with complex logics inside other functions to improve
  *   reusability and maintainability. In this case, we've defined the complex
  *   logics inside the core.ts file!
- *   In a huge project, you should have multiple controllers, divided
- *   by the domain of the operation.
  */
 
 import {NextFunction, Request, Response} from 'express';
@@ -22,12 +20,12 @@ export const oAuthCallBack = (req: Request, res: Response, next: NextFunction) =
         failureRedirect: '/error'
     }, (error: any, user: any) => {
         res.cookie("sessionToken", JSON.stringify({accessToken: user.accessToken}))
-        res.redirect('/success');
+        res.redirect('http://localhost:8082/auth/success');
     })(req, res, next)
 };
 
 export const authSuccess = (req: Request, res: Response) => {
-    res.send("user logging in")
+    res.redirect('http://localhost:8081/homepage');
 }
 export const authError = (req: Request, res: Response) => {
     res.send("error logging in")

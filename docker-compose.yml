@@ -1,7 +1,6 @@
 version: "3.8"
 
 services:
-
   # =========================
   # === INTERNAL SERVICES ===
   # =========================
@@ -16,15 +15,30 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: unicalendar_db
+      TZ: "Europe/Rome"
 
   notification:
     build:
       context: ./notification
       dockerfile: ./Dockerfile.dev
+    ports:
+      - 8088:80 # Exposed just for debug purposes!
     volumes:
       - notification_node_modules:/www/node_modules
       - ./notification:/www
       - ./models:/www/src/models
+
+  notification_telegram_db:
+    image: postgres
+    ports:
+      - 8997:5432 # Exposed just for debug purposes!
+    volumes:
+      - ./notification-telegram-db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: notification_telegram_db
+      TZ: "Europe/Rome"
 
   unitn_gateway:
     build:
@@ -39,8 +53,6 @@ services:
     build:
       context: ./unibz-gateway
       dockerfile: ./Dockerfile.dev
-    ports:
-      - 8088:80 # Exposed just for debug purposes!
     volumes:
       - unibz_gateway_node_modules:/www/node_modules
       - ./unibz-gateway:/www
@@ -56,6 +68,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: unibz_gateway_cache_db
+      TZ: "Europe/Rome"
 
   calendar:
     build:
@@ -65,7 +78,6 @@ services:
       - calendar_node_modules:/www/node_modules
       - ./calendar:/www
       - ./models:/www/src/models
-
 
   # ========================
   # === PROXIED SERVICES ===
@@ -106,7 +118,6 @@ services:
       - user_node_modules:/www/node_modules
       - ./user:/www
       - ./models:/www/src/models
-
 
   # ========================
   # === EXPOSED SERVICES ===

@@ -11,26 +11,76 @@
 
 import { Request, Response } from 'express';
 
-import {
-  getHello,
-} from './core';
+import { UniCalendarBot } from './bot';
+import { customAlphabet } from 'nanoid';
+import { TelegramDb } from './orm';
+import stripHtml from 'string-strip-html';
+import nodemailer from 'nodemailer';
+import Mail from 'nodemailer/lib/mailer';
 
-// --- EXAMPLE ---
+const nanoid = customAlphabet('1234567890', 6);
 
-export const hello = (req: Request, res: Response) => {
-  // If in the URL (GET request) e.g. localhost:8080/?name=pippo
-  const name = req.query['name'];
+const telegramDb = new TelegramDb();
+const uniCalendarBot = new UniCalendarBot(telegramDb);
 
-  // If in body of the request (as json or form-data)
-  // const name = req.body['name'];
+let emailTransporter: Mail | null = null;
+nodemailer.createTestAccount().then((testAccount) => {
+  emailTransporter = nodemailer.createTransport({
+    host: testAccount.smtp.host,
+    port: testAccount.smtp.port,
+    secure: testAccount.smtp.secure,
+    auth: {
+      user: testAccount.user,
+      pass: testAccount.pass,
+    },
+  });
+});
 
-  // If in the URL as a parameter e.g. localhost:8080/pippo/ and route defined as '/:name'
-  // const name = req.params['name'];
+export const telegram = async (req: Request, res: Response) => {
+  const userId = req.body['userId'];
+  const message = req.body['message'];
+  console.log(`Sending message to ${userId}: ${message}`);
 
-  if (name != null && typeof name === 'string') {
-    res.send(getHello(name));
+  const sessions = await telegramDb.getUserSessions(userId);
+  const sentTo: number[] = [];
+  for (let i = 0; i < sessions.length; i++) {
+    try {
+      await uniCalendarBot.sendMessage(sessions[i].chatId, message);
+      sentTo.push(sessions[i].chatId);
+    } catch (e) {}
+  }
+
+  res.send({ sentTo });
+};
+
+export const telegramCredentials = async (req: Request, res: Response) => {
+  const userId = req.body['userId'];
+  const secret = nanoid();
+  const result = await telegramDb.addCredentials(userId, secret);
+
+  res.send(result);
+};
+
+export const email = async (req: Request, res: Response) => {
+  const recipient = req.body['recipient'];
+  const subject = req.body['subject'];
+  const message = req.body['message'];
+
+  if (emailTransporter) {
+    let info = await emailTransporter.sendMail({
+      from: '"UniCalendar" <noreply@unicalendar.it>',
+      to: recipient,
+      subject: subject,
+      text: stripHtml(message).result,
+      html: message,
+    });
+
+    console.log('Email sent: %s', info.messageId);
+    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+    res.send();
   } else {
-    res.status(400);
-    res.send({ error: 'Invalid name format!' });
+    console.error('Email transporter not initialized yet.');
+    res.status(500);
+    res.send();
   }
 };

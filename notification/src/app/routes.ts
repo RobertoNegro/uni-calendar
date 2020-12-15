@@ -10,14 +10,12 @@
  */
 
 import express from 'express';
-import {
-  hello,
-} from './controller';
+import { email, telegram, telegramCredentials } from './controller';
 
 const router = express.Router();
 
-
-router.get('/', hello); // Example
-
+router.post('/email', email);
+router.post('/telegram', telegram);
+router.post('/telegram/credentials', telegramCredentials);
 
 export default router;

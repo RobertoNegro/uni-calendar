@@ -56,5 +56,12 @@ paths:
                 $ref: ./UniversitiesGatewayServices.v1.yaml#/components/schemas/UniversityCreation
       operationId: get-info
       description: Get the university's info.
+  /updateCache:
+    get:
+      summary: Trigger update cache
+      tags: []
+      responses: {}
+      operationId: get-updateCache
+      description: Endpoint used to update the courses list and lessons schedule's cache.
 components:
   schemas: {}

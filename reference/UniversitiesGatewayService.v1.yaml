@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: UniversitiesGatewayServices
+  title: UniversitiesGatewayService
   version: '1.0'
   description: Used to obtain a list of the available university gateways and redirect the requests to the correct gateway. Not exposed outside to the outside.
 servers:
@@ -98,11 +98,14 @@ components:
           type: string
         serverURI:
           type: string
+        lastActivity:
+          type: string
       required:
         - slug
         - shortName
         - fullName
         - serverURI
+        - lastActivity
     UniversityCreation:
       title: UniversityCreation
       type: object
@@ -113,10 +116,13 @@ components:
           type: string
         fullName:
           type: string
+        serverURI:
+          type: string
       required:
         - slug
         - shortName
         - fullName
+        - serverURI
     Course:
       description: ''
       type: object
@@ -131,7 +137,7 @@ components:
           type: string
           minLength: 1
         university:
-          $ref: '#/components/schemas/University'
+          $ref: '#/components/schemas/UniversityCreation'
       required:
         - id
         - name
@@ -150,7 +156,7 @@ components:
         location:
           type: string
         university:
-          $ref: ./UniversitiesGatewayServices.v1.yaml#/components/schemas/University
+          $ref: '#/components/schemas/UniversityCreation'
         course:
           type: string
       required:

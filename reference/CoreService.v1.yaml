@@ -4,36 +4,51 @@ info:
   version: '1.0'
   description: |-
     The process centric service that manage the different tasks of UniCalendar.
-
-    In particular, it will redirect the requests to the other services when needed.
-    Some of its endpoints are not exposed but instead they're used internally as scheduled tasks.
+    In particular, it will redirect the requests to the other services when needed and execute some scheduled tasks.
 servers:
   - url: 'http://localhost:3000'
 paths:
-  /process/notify:
+  /uni/*:
     get:
-      summary: Trigger user notifications
+      summary: Redirect to UniversitiesGatewayService
       tags: []
-      responses:
-        '200':
-          description: OK
-      operationId: get-user-notify
-      description: Trigger the sending of notifications (if needed) of the user events. The user is identified by its Google token in the Authorization header of the request. Also time-scheduled.
-      security:
-        - Google OAuth 2.0: []
+      responses: {}
+      operationId: get-uni
+    post:
+      summary: Redirect to UniversitiesGatewayService
+      operationId: post-uni
+      description: ''
     parameters: []
-  /process/update:
+  /auth/*:
     get:
-      summary: Trigger update user calendar
+      summary: Redirect to AuthenticationService
       tags: []
-      responses:
-        '200':
-          description: OK
-      operationId: get-update-user-calendar
-      security:
-        - Google OAuth 2.0: []
-      description: Trigger the update of the user calendar. The user is identified by its Google token in the Authorization header of the request. Also time-scheduled.
+      responses: {}
+      operationId: get-auth-*
+    post:
+      summary: Redirect to AuthenticationService
+      operationId: post-auth-*
+      description: ''
+  /courses/*:
+    get:
+      summary: Redirect to CoursesService
+      tags: []
+      responses: {}
+      operationId: get-courses-*
+    post:
+      summary: Redirect to CoursesService
+      operationId: post-courses-*
+  /user/*:
+    get:
+      summary: Redirect to UserService
+      tags: []
+      responses: {}
+      operationId: get-user
     parameters: []
+    post:
+      summary: Redirect to UserService
+      operationId: post-user-*
+      description: ''
 components:
   schemas: {}
   securitySchemes:

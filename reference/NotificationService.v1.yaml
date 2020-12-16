@@ -22,21 +22,6 @@ paths:
       responses:
         '200':
           description: OK
-      security:
-        - Google OAuth 2.0: []
-    parameters: []
-  /telegram/bot:
-    post:
-      summary: Telegram BOT callback
-      operationId: post-telegram-bot
-      responses:
-        '200':
-          description: OK
-      description: |-
-        Used for the elaborations of the user inputs in the bot and generation of responses.
-
-        /start <user_token> will associate the user id by which <user_token> belongs to the chat.id received from Telegram API.
-        /stop will remove that association.
     parameters: []
   /email:
     post:
@@ -54,8 +39,36 @@ paths:
       description: |-
         Send an email to the user.
         The Google token of the user is given in the Authorization header of the request.
-      security:
-        - Google OAuth 2.0: []
+  /telegram/credentials:
+    post:
+      summary: Get new Telegram credentials
+      operationId: post-telegram-credentials
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                  secret:
+                    type: string
+                  expires:
+                    type: string
+                  id:
+                    type: number
+      description: Used for the generation of a 6-digits secret string to be used in the Telegram bot in the /start command (e.g. '/start 130593'). This code is used to bind the user to a specific Telegram chatID. The validity of that token is 2 minutes.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+        description: ''
 components:
   schemas:
     TelegramNotification:
@@ -66,8 +79,11 @@ components:
       properties:
         message:
           type: string
+        userId:
+          type: string
       required:
         - message
+        - userId
     EmailNotification:
       title: EmailNotification
       type: object
@@ -76,9 +92,12 @@ components:
           type: string
         subject:
           type: string
+        recipient:
+          type: string
       required:
         - message
         - subject
+        - recipient
   securitySchemes:
     Google OAuth 2.0:
       type: oauth2

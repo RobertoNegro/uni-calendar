@@ -10,14 +10,13 @@
  */
 
 import express from 'express';
-import {
-  hello,
-} from './controller';
+import { addUniversity, courseEvents, courses, universitiesList } from './controller';
 
 const router = express.Router();
 
-
-router.get('/', hello); // Example
-
+router.get('/universities', universitiesList);
+router.post('/university', addUniversity);
+router.get('/university/:slug/courses', courses);
+router.get('/university/:slug/course/:courseId', courseEvents);
 
 export default router;

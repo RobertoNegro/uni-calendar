@@ -13,7 +13,7 @@ import { Request, Response } from 'express';
 
 import { getInfo, updateCache } from './core';
 
-import { CacheDb } from './models';
+import { CacheDb } from './orm';
 import moment from 'moment';
 const cacheDb = new CacheDb();
 
@@ -50,17 +50,16 @@ export const triggerUpdateCache = async (req: Request, res: Response) => {
 };
 
 export const courses = async (req: Request, res: Response) => {
-  const courses = await cacheDb.getCourses();
-  res.send(
-    courses.map((course) => {
-      return {
-        id: course.id,
-        name: course.name,
-        professor: course.professor,
-        university: getInfo(),
-      };
-    })
-  );
+  let courses = await cacheDb.getCourses();
+  courses = courses.map((course) => {
+    return {
+      id: course.id,
+      name: course.name,
+      professor: course.professor,
+      university: getInfo(),
+    };
+  });
+  res.send(courses);
 };
 
 export const events = async (req: Request, res: Response) => {

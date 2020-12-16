@@ -12,25 +12,30 @@ import logger from 'morgan';
 import compression from 'compression';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import cron from 'node-cron';
 
 import config from './config';
 import router from './app/routes';
 import { createProxyMiddleware } from 'http-proxy-middleware';
+import { updateUniBz } from './app/jobs';
 
 const index = express();
 
 // Log stack trace of errors (to be used only on development phases!)
 index.use(errorHandler());
 // Log HTTP requests
-// @ts-ignore
 index.use(logger('dev'));
 // Compress all responses
 index.use(compression());
 // Decode body responses
-index.use(bodyParser.json());
-index.use(bodyParser.urlencoded({ extended: true }));
+index.use(/\/((?!auth|uni|courses|user).)*/, bodyParser.json());
+index.use(/\/((?!auth|uni|courses|user).)*/, bodyParser.urlencoded({ extended: true }));
+
 // Enable Cross-Origin Resource Sharing
 index.use(cors());
+
+// Uses router for all routes (we split the server logics and the routes definition)
+index.use('/', router);
 
 // Redirections
 index.use(
@@ -44,7 +49,7 @@ index.use(
 index.use(
   '/uni',
   createProxyMiddleware({
-    target: 'http://universitites_gateway',
+    target: 'http://universities_gateway',
     changeOrigin: true,
     pathRewrite: { '^/uni': '' },
   })
@@ -66,8 +71,9 @@ index.use(
   })
 );
 
-// Uses router for all routes (we split the server logics and the routes definition)
-index.use('/', router);
+// Set cron jobs
+cron.schedule('0 */2 * * *', updateUniBz); // every 2 hours
+updateUniBz().catch((e) => console.error(e));
 
 // Start listening for requests! :)
 index.listen(config.PORT, config.HOST);

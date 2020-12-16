@@ -11,6 +11,7 @@ services:
       - 8999:5432 # Exposed just for debug purposes!
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - db_data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
@@ -32,6 +33,7 @@ services:
       - 8997:5432 # Exposed just for debug purposes!
     volumes:
       - ./notification-telegram-db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - notification_telegram_db_data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
@@ -62,6 +64,7 @@ services:
       - 8998:5432 # Exposed just for debug purposes!
     volumes:
       - ./unibz-gateway-cache-db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - unibz_gateway_cache_db_data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
@@ -154,3 +157,7 @@ volumes:
   user_node_modules:
   core_node_modules:
   frontend_node_modules:
+
+  db_data:
+  notification_telegram_db_data:
+  unibz_gateway_cache_db_data:

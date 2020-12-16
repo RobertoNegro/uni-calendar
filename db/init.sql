@@ -1,3 +1,8 @@
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+
+SET TIMEZONE='Europe/Rome';
+
 -- ----------------------------
 -- Sequence structure for EmailNotification_id_seq
 -- ----------------------------
@@ -105,7 +110,8 @@ CREATE TABLE "University" (
   "slug" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
   "shortName" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
   "fullName" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
-  "serverURI" varchar(255) COLLATE "pg_catalog"."default" NOT NULL
+  "serverURI" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+  "lastActivity" timestamp(6) NOT NULL DEFAULT NOW()
 )
 ;
 

@@ -1,3 +1,7 @@
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+
+SET TIMEZONE='Europe/Rome';
 
 -- ----------------------------
 -- Sequence structure for Course_id_seq

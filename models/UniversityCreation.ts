@@ -1,5 +1,6 @@
 export default interface UniversityCreation {
-    slug: string;
-    fullName: string;
-    shortName: string;
+  slug: string;
+  fullName: string;
+  shortName: string;
+  serverURI: string;
 }

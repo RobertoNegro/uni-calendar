@@ -17,6 +17,6 @@ const router = express.Router();
 router.get('/info', info);
 router.get('/updateCache', triggerUpdateCache);
 router.get('/courses', courses);
-router.get('/courses/:id', events);
+router.get('/course/:id', events);
 
 export default router;

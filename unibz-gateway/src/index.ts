@@ -12,16 +12,17 @@ import logger from 'morgan';
 import compression from 'compression';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import cron from 'node-cron';
 
 import config from './config';
 import router from './app/routes';
+import { sendUniversityInfo } from './app/jobs';
 
 const index = express();
 
 // Log stack trace of errors (to be used only on development phases!)
 index.use(errorHandler());
 // Log HTTP requests
-// @ts-ignore
 index.use(logger('dev'));
 // Compress all responses
 index.use(compression());
@@ -29,11 +30,14 @@ index.use(compression());
 index.use(bodyParser.json());
 index.use(bodyParser.urlencoded({ extended: true }));
 // Enable Cross-Origin Resource Sharing
-// @ts-ignore
 index.use(cors());
 
 // Uses router for all routes (we split the server logics and the routes definition)
 index.use('/', router);
+
+// Set cron jobs
+cron.schedule('* * * * *', sendUniversityInfo); // every minute
+sendUniversityInfo().catch((e) => console.error(e));
 
 // Start listening for requests! :)
 index.listen(config.PORT, config.HOST);

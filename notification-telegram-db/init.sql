@@ -1,3 +1,8 @@
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+
+SET TIMEZONE='Europe/Rome';
+
 -- ----------------------------
 -- Sequence structure for Authentication_id_seq
 -- ----------------------------

@@ -11,10 +11,10 @@
  */
 import puppeteer from 'puppeteer';
 import config from '../config';
-import University from '../models/University';
 import { CachedEvent } from './models';
+import UniversityCreation from '../models/UniversityCreation';
 
-export const getInfo: () => University = () => {
+export const getInfo: () => UniversityCreation = () => {
   return {
     slug: config.slug,
     fullName: config.fullName,

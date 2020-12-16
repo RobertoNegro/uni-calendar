@@ -48,7 +48,7 @@ index.use(
 );
 index.use(
   '/uni',
-  createProxyMiddleware({
+  createProxyMiddleware(['**', '!**/university'], {
     target: 'http://universities_gateway',
     changeOrigin: true,
     pathRewrite: { '^/uni': '' },

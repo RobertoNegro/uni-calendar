@@ -21,8 +21,6 @@ services:
     build:
       context: ./notification
       dockerfile: ./Dockerfile.dev
-    ports:
-      - 8088:80 # Exposed just for debug purposes!
     volumes:
       - notification_node_modules:/www/node_modules
       - ./notification:/www

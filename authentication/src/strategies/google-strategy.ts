@@ -24,8 +24,7 @@ if (passportConfig.clientID) {
         const email = (profile.emails) ? profile.emails[0] : '';
         const photo = (profile.photos) ? profile.photos[0] : '';
         authDao.addUser(accessToken, name, surname, email ? email.value : '', photo ? photo.value : '');
-        const user = { accessToken: accessToken, email: email}
-        console.log("STRATEGY!!!!!!!!!!! "+name, surname, email)
+        const user = { accessToken: accessToken, email: email ? email.value : ''}
         return done(null, user);
       }
     ))

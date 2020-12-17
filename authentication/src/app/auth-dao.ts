@@ -14,7 +14,6 @@ export class AuthDao {
   }
 
   async addUser( googleId: string, firstName: string,lastName: string,email: string, picture: string) {
-    console.log("ADD USER!!!!!")
     const userId = await this.getUserByEmail(email);
     if (!userId) {
        await this.db.none(
@@ -35,5 +34,13 @@ export class AuthDao {
       [email]
     );
     return res && res.id ? res.id : null;
+  }
+
+  async getUserByEmailAndAccessToken(email: string, token: string) {
+    const res = await this.db.oneOrNone<{ id: number }>(
+      'SELECT * FROM "User" WHERE email = $1 AND "googleId" = $2',
+      [email, token]
+    );
+    return res ? res : null;
   }
 }

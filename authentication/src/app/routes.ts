@@ -11,13 +11,15 @@
 
 import express from 'express';
 import {
-  oAuth, oAuthCallBack,
+  authCheck,
+  oAuth, oAuthCallBack
 } from './controller';
 
 const router = express.Router();
 
 router.get('/google/oauth', oAuth)
 router.get('/google/callback', oAuthCallBack)
+router.get('/auth', authCheck)
 
 
 export default router;

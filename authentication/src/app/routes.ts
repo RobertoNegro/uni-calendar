@@ -11,8 +11,6 @@
 
 import express from 'express';
 import {
-  authError,
-  authSuccess,
   oAuth, oAuthCallBack,
 } from './controller';
 
@@ -21,7 +19,5 @@ const router = express.Router();
 router.get('/google/oauth', oAuth)
 router.get('/google/callback', oAuthCallBack)
 
-router.get('/success', authSuccess);
-router.get('/error', authError);
 
 export default router;

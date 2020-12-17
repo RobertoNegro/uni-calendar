@@ -8,19 +8,25 @@ import passport from "passport";
 import {Profile, OAuth2Strategy as GoogleStrategy} from "passport-google-oauth";
 import {VerifyFunction} from "passport-google-oauth";
 import config from "../config";
+import {AuthDao} from '../app/auth-dao'
 
 const passportConfig = {
     clientID: config.GOOGLE_CLIENT_ID,
     clientSecret: config.GOOGLE_CLIENT_SECRET,
-    callbackURL: "http://localhost:8082/auth/google/callback"
+    callbackURL: config.API_URL+"/auth/google/callback"
 }
 
+const authDao = new AuthDao();
 if (passportConfig.clientID) {
-    passport.use(new GoogleStrategy(passportConfig, function (accessToken: string, refreshToken:string, profile: Profile, done:VerifyFunction){
-            // save into db the accessToken
-            // profile contains the user info
-            const user = {accessToken: accessToken}
-            return done(null, user);
-        }
+    passport.use(new GoogleStrategy(passportConfig, function (accessToken: string, refreshToken:string, profile: Profile, done:VerifyFunction) {
+        const name =  profile.name?.givenName ? profile.name?.givenName : '';
+        const surname = profile.name?.familyName ? profile.name?.familyName : '';
+        const email = (profile.emails) ? profile.emails[0] : '';
+        const photo = (profile.photos) ? profile.photos[0] : '';
+        authDao.addUser(accessToken, name, surname, email ? email.value : '', photo ? photo.value : '');
+        const user = { accessToken: accessToken, email: email}
+        console.log("STRATEGY!!!!!!!!!!! "+name, surname, email)
+        return done(null, user);
+      }
     ))
 }

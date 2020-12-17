@@ -13,7 +13,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import router from './app/routes';
 import passport from 'passport';
-import './strategies/google-strategy'
+import './strategies/google-strategy';
 
 import config from "./config";
 

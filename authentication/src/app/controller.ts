@@ -8,25 +8,19 @@
  */
 
 import {NextFunction, Request, Response} from 'express';
+import config from '../config';
 
 const passport = require('passport');
 
 export const oAuth = (req: Request, res: Response, next: NextFunction) => {
-    passport.authenticate('google', {session: false, scope: ['profile', 'https://www.googleapis.com/auth/calendar']})(req, res, next);
+    passport.authenticate('google', {session: false, scope: ['profile', 'email', 'https://www.googleapis.com/auth/calendar']})(req, res, next);
 };
 export const oAuthCallBack = (req: Request, res: Response, next: NextFunction) => {
     passport.authenticate('google', {
         session: false,
-        failureRedirect: '/error'
+        failureRedirect: config.FRONTEND_URL
     }, (error: any, user: any) => {
-        res.cookie("sessionToken", JSON.stringify({accessToken: user.accessToken}))
-        res.redirect('http://localhost:8082/auth/success');
+        // res.cookie("sessionToken", JSON.stringify({accessToken: user.accessToken}))
+        res.redirect(config.FRONTEND_URL+'/homepage');
     })(req, res, next)
 };
-
-export const authSuccess = (req: Request, res: Response) => {
-    res.redirect('http://localhost:8081/homepage');
-}
-export const authError = (req: Request, res: Response) => {
-    res.send("error logging in")
-}

@@ -123,7 +123,7 @@ CREATE TABLE "User" (
   "id" int4 NOT NULL DEFAULT nextval('"User_id_seq"'::regclass),
   "googleId" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
   "email" varchar(255) COLLATE "pg_catalog"."default",
-  "universitySlug" varchar(255) COLLATE "pg_catalog"."default" NOT NULL DEFAULT nextval('"User_universityId_seq"'::regclass),
+  "universitySlug" varchar(255) COLLATE "pg_catalog"."default",
   "telegramToken" varchar(255) COLLATE "pg_catalog"."default",
   "firstName" varchar(255) COLLATE "pg_catalog"."default",
   "lastName" varchar(255) COLLATE "pg_catalog"."default",
@@ -158,13 +158,6 @@ SELECT setval('"TelegramNotification_id_seq"', 2, false);
 ALTER SEQUENCE "User_id_seq"
 OWNED BY "User"."id";
 SELECT setval('"User_id_seq"', 2, false);
-
--- ----------------------------
--- Alter sequences owned by
--- ----------------------------
-ALTER SEQUENCE "User_universityId_seq"
-OWNED BY "User"."universitySlug";
-SELECT setval('"User_universityId_seq"', 2, false);
 
 -- ----------------------------
 -- Primary Key structure for table EmailNotification

@@ -121,8 +121,9 @@ CREATE TABLE "University" (
 DROP TABLE IF EXISTS "User";
 CREATE TABLE "User" (
   "id" int4 NOT NULL DEFAULT nextval('"User_id_seq"'::regclass),
-  "googleId" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
-  "email" varchar(255) COLLATE "pg_catalog"."default",
+  "email" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+  "googleAccessToken" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+  "googleRefreshToken" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
   "universitySlug" varchar(255) COLLATE "pg_catalog"."default",
   "telegramToken" varchar(255) COLLATE "pg_catalog"."default",
   "firstName" varchar(255) COLLATE "pg_catalog"."default",

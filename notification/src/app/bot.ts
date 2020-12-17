@@ -13,6 +13,10 @@ export class UniCalendarBot {
   constructor(telegramDb: TelegramDb) {
     this.db = telegramDb;
 
+    this.bot.on('polling_error', (error) => {
+      console.log(error.message);
+    });
+
     this.bot.onText(/\/start(\s+(.+))?/, async (msg, match) => {
       const chatId = msg.chat.id;
 

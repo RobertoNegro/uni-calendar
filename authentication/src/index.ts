@@ -15,9 +15,9 @@ import router from './app/routes';
 import passport from 'passport';
 import './strategies/google-strategy';
 
-import config from "./config";
+import config from './config';
 
-import cookieParser from "cookie-parser";
+import cookieParser from 'cookie-parser';
 
 const index = express();
 
@@ -35,8 +35,7 @@ index.use(bodyParser.urlencoded({ extended: true }));
 // Enable Cross-Origin Resource Sharing
 index.use(cors());
 // Cookie parser
-index.use(cookieParser())
-
+index.use(cookieParser());
 
 // Uses router for all routes (we split the server logics and the routes definition)
 index.use('/', router);

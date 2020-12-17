@@ -1,12 +1,13 @@
-import University from "./University";
+import University from './University';
 
 export default interface User {
-    id?: number;
-    googleId: string;
-    email: string;
-    university: University;
-    telegramToken: string | undefined;
-    firstName: string;
-    lastName: string;
-    picture: string | undefined;
+  id: number;
+  email: string;
+  googleAccessToken: string;
+  googleRefreshToken: string;
+  university?: University;
+  telegramToken?: string;
+  firstName?: string;
+  lastName?: string;
+  picture?: string;
 }

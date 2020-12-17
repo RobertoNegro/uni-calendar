@@ -44,3 +44,4 @@ export class AuthDao {
     return res ? res : null;
   }
 }
+export const authDao = new AuthDao();

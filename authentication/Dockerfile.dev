@@ -1,6 +1,5 @@
 FROM node:12-slim
 WORKDIR /www
 ENV NODE_ENV development
-
-CMD ["npm", "start"]
+CMD ["yarn", "run", "start"]
 EXPOSE 80

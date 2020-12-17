@@ -11,11 +11,10 @@ import {NextFunction, Request, Response} from 'express';
 import config from '../config';
 import jwt from 'jsonwebtoken';
 import { token } from 'morgan';
-import { AuthDao } from './auth-dao';
+import {authDao} from './auth-dao';
 
 const passport = require('passport');
 
-const authDao = new AuthDao();
 
 export const oAuth = (req: Request, res: Response, next: NextFunction) => {
     passport.authenticate('google', {session: false, scope: ['profile', 'email', 'https://www.googleapis.com/auth/calendar']})(req, res, next);

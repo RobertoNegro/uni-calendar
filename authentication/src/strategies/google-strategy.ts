@@ -8,7 +8,7 @@ import passport from "passport";
 import {Profile, OAuth2Strategy as GoogleStrategy} from "passport-google-oauth";
 import {VerifyFunction} from "passport-google-oauth";
 import config from "../config";
-import {AuthDao} from '../app/auth-dao'
+import {authDao} from '../app/auth-dao'
 
 const passportConfig = {
     clientID: config.GOOGLE_CLIENT_ID,
@@ -16,7 +16,6 @@ const passportConfig = {
     callbackURL: config.API_URL+"/auth/google/callback"
 }
 
-const authDao = new AuthDao();
 if (passportConfig.clientID) {
     passport.use(new GoogleStrategy(passportConfig, function (accessToken: string, refreshToken:string, profile: Profile, done:VerifyFunction) {
         const name =  profile.name?.givenName ? profile.name?.givenName : '';

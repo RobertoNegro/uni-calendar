@@ -29,6 +29,45 @@ paths:
         Redirect the user to "error page" or "authenticated page" (and saves the google id into the db).
         Request body depends on Google OAuth Results (error or user data), but they are managed directly by PassportJS.
         See http://www.passportjs.org/docs/google/#oauth-2-0 (see Oauth 2.0, NOT 1.0)
+  /auth:
+    post:
+      summary: Check user authentication
+      operationId: post-auth
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  cookie:
+                    type: object
+                    required:
+                      - token
+                      - exp
+                    properties:
+                      token:
+                        type: string
+                        minLength: 1
+                      exp:
+                        type: number
+                required:
+                  - user
+                  - cookie
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+        description: ''
+      description: 'Verify the user token if it''s valid. If it''s valid, but the google access code is expired, it will generate a new access code and the token will be sent back to the frontend in order to be saved in the browser cookies.'
 components:
   schemas:
     User:
@@ -38,7 +77,11 @@ components:
       properties:
         email:
           type: string
-        googleId:
+        googleAccessToken:
+          type: string
+        googleExpiringTime:
+          type: string
+        googleRefreshToken:
           type: string
         lastName:
           type: string
@@ -54,9 +97,11 @@ components:
           type: string
       required:
         - email
-        - googleId
+        - googleAccessToken
         - lastName
         - firstName
-        - university
         - id
+        - picture
+        - googleExpiringTime
+        - googleRefreshToken
   securitySchemes: {}

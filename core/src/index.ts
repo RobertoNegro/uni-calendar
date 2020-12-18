@@ -40,7 +40,7 @@ index.use('/', router);
 // Redirections
 index.use(
   '/auth',
-  createProxyMiddleware({
+  createProxyMiddleware(['**', '!**/auth/refresh'], {
     target: 'http://authentication',
     changeOrigin: true,
     pathRewrite: { '^/auth': '' },

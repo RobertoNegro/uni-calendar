@@ -10,12 +10,13 @@
  */
 
 import express from 'express';
-import { authCheck, oAuth, oAuthCallBack } from './controller';
+import { authCheck, oAuth, oAuthCallBack, updateToken } from './controller';
 
 const router = express.Router();
 
 router.get('/google/oauth', oAuth);
 router.get('/google/callback', oAuthCallBack);
-router.get('/auth', authCheck);
+router.post('/', authCheck);
+router.post('/refresh', updateToken);
 
 export default router;

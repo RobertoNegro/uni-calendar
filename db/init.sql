@@ -123,6 +123,7 @@ CREATE TABLE "User" (
   "id" int4 NOT NULL DEFAULT nextval('"User_id_seq"'::regclass),
   "email" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
   "googleAccessToken" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+  "googleExpiringTime" timestamp(6) NOT NULL,
   "googleRefreshToken" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
   "universitySlug" varchar(255) COLLATE "pg_catalog"."default",
   "telegramToken" varchar(255) COLLATE "pg_catalog"."default",

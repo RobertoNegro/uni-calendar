@@ -8,24 +8,22 @@
  */
 
 import { NextFunction, Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
-import { token } from 'morgan';
+const passport = require('passport');
 import config from '../config';
 import { userDb } from './orm';
-import { isSessionToken, SessionToken } from './models';
 import User from '../models/User';
-import secrets from '../secrets';
-
-const passport = require('passport');
+import { OAuth2Client } from '../strategies/google-strategy';
+import { checkAndEventuallyUpdateSessionCookie, refreshUserToken, setSessionCookie } from './core';
 
 export const oAuth = (req: Request, res: Response, next: NextFunction) => {
   passport.authenticate('google', {
     session: false,
     accessType: 'offline',
-    prompt: 'consent',
+    prompt: 'consent', // It will always ask for consent. This provides refreshToken at each access. Without it, we get the refresh token only the first time. Let's keep it as that in dev.
     scope: ['profile', 'email', 'https://www.googleapis.com/auth/calendar'],
   })(req, res, next);
 };
+
 export const oAuthCallBack = (req: Request, res: Response, next: NextFunction) => {
   passport.authenticate(
     'google',
@@ -34,17 +32,13 @@ export const oAuthCallBack = (req: Request, res: Response, next: NextFunction) =
       failureRedirect: config.FRONTEND_URL,
     },
     (error: any, user: User) => {
-      const payload: SessionToken = {
-        googleAccessToken: user.googleAccessToken,
-        email: user.email,
-      };
-      const token = jwt.sign(payload, secrets.JWT_KEY, { expiresIn: '2h' });
-
-      res.cookie('sessionToken', token, {
-        expires: new Date(Date.now() + 2 * 60 * 60 * 1000),
-        maxAge: 2 * 60 * 60 * 1000,
-      });
-      res.redirect(config.FRONTEND_URL + '/homepage');
+      if (!error && user) {
+        setSessionCookie(res, user.googleAccessToken, user.email);
+        res.redirect(config.FRONTEND_URL + '/homepage');
+      } else {
+        console.log('Error on login:', error);
+        res.redirect(config.FRONTEND_URL);
+      }
     }
   )(req, res, next);
 };
@@ -53,28 +47,43 @@ export const authCheck = async (req: Request, res: Response) => {
   const token = req.body['token'];
   if (token) {
     try {
-      let decoded = jwt.verify(token, secrets.JWT_KEY);
-      if (typeof decoded !== 'string' && isSessionToken(decoded)) {
-        const user = await userDb.getUserByEmailAndAccessToken(
-          decoded.email,
-          decoded.googleAccessToken
-        );
-        if (user) {
-          res.send(user);
-        } else {
-          res.status(401);
-          res.send();
-        }
+      const user = await checkAndEventuallyUpdateSessionCookie(res, token);
+      if (user) {
+        res.send(user);
       } else {
-        res.status(401);
+        res.status(404);
         res.send();
       }
     } catch (err) {
+      console.error(err);
       res.status(500);
       res.send();
     }
   } else {
     res.status(400);
+    res.send();
+  }
+};
+
+export const updateToken = async (req: Request, res: Response) => {
+  const userId: number | string = req.body['userId'];
+  if (!userId || typeof userId !== 'number') {
+    res.status(400);
+    res.send();
+    return;
+  }
+
+  try {
+    const user = await refreshUserToken(userId);
+    if (user) {
+      res.send(user);
+    } else {
+      res.status(404);
+      res.send();
+    }
+  } catch (e) {
+    console.error(e);
+    res.status(500);
     res.send();
   }
 };

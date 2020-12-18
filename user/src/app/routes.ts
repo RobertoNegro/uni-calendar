@@ -11,13 +11,13 @@
 
 import express from 'express';
 import {
-  hello,
+  createUserSettings, getUserSettings
 } from './controller';
 
 const router = express.Router();
 
 
-router.get('/', hello); // Example
-
+router.post('/settings', createUserSettings);
+router.get('/settings', getUserSettings);
 
 export default router;

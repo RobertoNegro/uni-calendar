@@ -10,10 +10,10 @@
 import { NextFunction, Request, Response } from 'express';
 const passport = require('passport');
 import config from '../config';
-import { userDb } from './orm';
 import User from '../models/User';
-import { OAuth2Client } from '../strategies/google-strategy';
-import { checkAndEventuallyUpdateSessionCookie, refreshUserToken, setSessionCookie } from './core';
+import { checkAndEventuallyUpdateUserToken, getSessionCookie, refreshUserToken } from './core';
+import moment from 'moment';
+import { userDb } from './orm';
 
 export const oAuth = (req: Request, res: Response, next: NextFunction) => {
   passport.authenticate('google', {
@@ -33,8 +33,17 @@ export const oAuthCallBack = (req: Request, res: Response, next: NextFunction) =
     },
     (error: any, user: User) => {
       if (!error && user) {
-        setSessionCookie(res, user.googleAccessToken, user.email);
-        res.redirect(config.FRONTEND_URL + '/homepage');
+        res.redirect(
+          config.FRONTEND_URL +
+            '/login/done?token=' +
+            getSessionCookie(
+              user.googleAccessToken,
+              user.email,
+              moment(user.googleExpiringTime).valueOf()
+            ) +
+            '&exp=' +
+            Math.floor(moment(user.googleExpiringTime).valueOf() / 1000)
+        );
       } else {
         console.log('Error on login:', error);
         res.redirect(config.FRONTEND_URL);
@@ -43,47 +52,62 @@ export const oAuthCallBack = (req: Request, res: Response, next: NextFunction) =
   )(req, res, next);
 };
 
-export const authCheck = async (req: Request, res: Response) => {
+export const check = async (req: Request, res: Response) => {
   const token = req.body['token'];
   if (token) {
     try {
-      const user = await checkAndEventuallyUpdateSessionCookie(res, token);
+      const user = await checkAndEventuallyUpdateUserToken(token);
+      if (user) {
+        res.send({
+          user: user,
+          cookie: {
+            token: getSessionCookie(
+              user.googleAccessToken,
+              user.email,
+              moment(user.googleExpiringTime).valueOf()
+            ),
+            exp: Math.floor(moment(user.googleExpiringTime).valueOf() / 1000),
+          },
+        });
+      } else {
+        res.status(404);
+        res.send({ error: 'No user found with the specified email and access token' });
+      }
+    } catch (e) {
+      console.error(e);
+      res.status(500);
+      res.send({ error: e });
+    }
+  } else {
+    res.status(400);
+    res.send({ error: 'Missing token parameter' });
+  }
+};
+
+export const refresh = async (req: Request, res: Response) => {
+  const userId: any = req.body['userId'];
+  if (userId != null && typeof userId === 'number') {
+    try {
+      const user = await refreshUserToken(userId);
       if (user) {
         res.send(user);
       } else {
         res.status(404);
-        res.send();
+        res.send({ error: 'No user found with the specified id' });
       }
-    } catch (err) {
-      console.error(err);
+    } catch (e) {
+      console.error(e);
       res.status(500);
-      res.send();
+      res.send({ error: e });
     }
   } else {
-    res.status(400);
-    res.send();
-  }
-};
-
-export const updateToken = async (req: Request, res: Response) => {
-  const userId: number | string = req.body['userId'];
-  if (!userId || typeof userId !== 'number') {
-    res.status(400);
-    res.send();
-    return;
-  }
-
-  try {
-    const user = await refreshUserToken(userId);
-    if (user) {
-      res.send(user);
-    } else {
-      res.status(404);
-      res.send();
+    const ids = await userDb.getUserIdsList();
+    for (let i = 0; i < ids.length; i++) {
+      try {
+        await refreshUserToken(ids[i].id);
+      } catch (e) {
+        console.error(`Error while refreshing user ${ids[i].id}:`, e);
+      }
     }
-  } catch (e) {
-    console.error(e);
-    res.status(500);
-    res.send();
   }
 };

@@ -5,6 +5,10 @@ import User from '../models/User';
 export class UserDb {
   db = pgPromise({})(config.DB);
 
+  async getUserIdsList() {
+    return await this.db.manyOrNone<{ id: number }>('SELECT id FROM "User"');
+  }
+
   async addUser(
     googleAccessToken: string,
     googleRefreshToken: string | null,

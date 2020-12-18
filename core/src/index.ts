@@ -17,7 +17,7 @@ import cron from 'node-cron';
 import config from './config';
 import router from './app/routes';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import { updateUniBz } from './app/jobs';
+import { updateGoogleTokens, updateUniBz } from './app/jobs';
 
 const index = express();
 
@@ -74,6 +74,8 @@ index.use(
 // Set cron jobs
 cron.schedule('0 */2 * * *', updateUniBz); // every 2 hours
 updateUniBz().catch((e) => console.error(e));
+cron.schedule('* * * * *', updateGoogleTokens); // every minute
+updateGoogleTokens().catch((e) => console.error(e));
 
 // Start listening for requests! :)
 index.listen(config.PORT, config.HOST);

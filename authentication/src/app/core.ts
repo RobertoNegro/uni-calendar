@@ -3,9 +3,8 @@ import { OAuth2Client } from '../strategies/google-strategy';
 import { isSessionToken, SessionToken } from './models';
 import jwt from 'jsonwebtoken';
 import secrets from '../secrets';
-
-import { Response } from 'express';
 import User from '../models/User';
+import moment from 'moment';
 
 /*********
  * Core functionalities
@@ -19,20 +18,23 @@ import User from '../models/User';
  *   It really depends on your project, style and personal preference :)
  */
 
-export const setSessionCookie = (res: Response, googleAccessToken: string, email: string) => {
+export const getSessionCookie = (
+  googleAccessToken: string,
+  email: string,
+  expirationTimestamp: number
+) => {
   const payload: SessionToken = {
     googleAccessToken: googleAccessToken,
     email: email,
+    exp: Math.floor(expirationTimestamp / 1000),
   };
-  const token = jwt.sign(payload, secrets.JWT_KEY, { expiresIn: '50m' });
 
-  res.cookie('sessionToken', token, {
-    expires: new Date(Date.now() + 50 * 60 * 1000),
-    maxAge: 50 * 60 * 1000,
+  return jwt.sign(payload, secrets.JWT_KEY, {
+    noTimestamp: true,
   });
 };
 
-export const checkAndEventuallyUpdateSessionCookie = async (res: Response, token: string) => {
+export const checkAndEventuallyUpdateUserToken = async (token: string) => {
   const decoded = jwt.verify(token, secrets.JWT_KEY);
   if (typeof decoded !== 'string' && isSessionToken(decoded)) {
     const user = await userDb.getUserByEmailAndAccessToken(
@@ -41,14 +43,7 @@ export const checkAndEventuallyUpdateSessionCookie = async (res: Response, token
     );
     if (user) {
       const newUser = await refreshUserToken(user);
-      if (newUser) {
-        if (newUser.googleAccessToken !== user.googleAccessToken) {
-          setSessionCookie(res, newUser.googleAccessToken, newUser.email);
-        }
-        return newUser;
-      } else {
-        return false;
-      }
+      return newUser ? newUser : false;
     } else {
       return false;
     }
@@ -65,7 +60,7 @@ export const refreshUserToken = async (user: number | User) => {
     }
     user = dbUser;
   }
-  if (new Date(user.googleExpiringTime) < new Date()) {
+  if (moment(user.googleExpiringTime) < moment()) {
     OAuth2Client.setCredentials({
       access_token: user.googleAccessToken,
       refresh_token: user.googleRefreshToken,

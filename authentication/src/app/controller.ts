@@ -102,12 +102,20 @@ export const refresh = async (req: Request, res: Response) => {
     }
   } else {
     const ids = await userDb.getUserIdsList();
+    const done = [];
+    const errors = [];
     for (let i = 0; i < ids.length; i++) {
       try {
         await refreshUserToken(ids[i].id);
+        done.push(ids[i].id);
       } catch (e) {
         console.error(`Error while refreshing user ${ids[i].id}:`, e);
+        errors.push({
+          id: ids[i].id,
+          error: e,
+        });
       }
     }
+    res.send({ done: done, errors: errors });
   }
 };

@@ -28,8 +28,8 @@ index.use(logger('dev'));
 // Compress all responses
 index.use(compression());
 // Decode body responses
-index.use(/\/((?!auth|uni|courses|user).)*/, bodyParser.json());
-index.use(/\/((?!auth|uni|courses|user).)*/, bodyParser.urlencoded({ extended: true }));
+index.use(/\/((?!auth|uni|courses|user|calendar).)*/, bodyParser.json());
+index.use(/\/((?!auth|uni|courses|user|calendar).)*/, bodyParser.urlencoded({ extended: true }));
 
 // Enable Cross-Origin Resource Sharing
 index.use(cors());
@@ -68,6 +68,15 @@ index.use(
     target: 'http://user',
     changeOrigin: true,
     pathRewrite: { '^/user': '' },
+  })
+);
+
+index.use(
+  '/calendar',
+  createProxyMiddleware({
+    target: 'http://calendar',
+    changeOrigin: true,
+    pathRewrite: { '^/calendar': '' },
   })
 );
 

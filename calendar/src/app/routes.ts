@@ -10,14 +10,11 @@
  */
 
 import express from 'express';
-import {
-  hello,
-} from './controller';
+import { clearEvents, createEvent } from './controller';
 
 const router = express.Router();
 
-
-router.get('/', hello); // Example
-
+router.post('/event', createEvent);
+router.post('/clear', clearEvents);
 
 export default router;

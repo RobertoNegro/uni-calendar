@@ -12,6 +12,7 @@ import config from '../config';
 import jwt from 'jsonwebtoken';
 import { token } from 'morgan';
 import {authDao} from './auth-dao';
+import { getAuthorizationHeader } from './helper';
 
 const passport = require('passport');
 
@@ -35,12 +36,12 @@ export const oAuthCallBack = (req: Request, res: Response, next: NextFunction) =
 
 
 export const authCheck = async (req: Request, res: Response, next: NextFunction) => {
-    const token = req.body['token'];
+    const token = getAuthorizationHeader(req);
     try {
         let decoded: any =  jwt.verify(token, 'secret');
         const user = await authDao.getUserByEmailAndAccessToken(decoded.email, decoded.googleAuthCode);
         if (user) {
-            res.send(user);
+            res.send(JSON.stringify(user));
         } else {
             res.status(401);
             res.send();

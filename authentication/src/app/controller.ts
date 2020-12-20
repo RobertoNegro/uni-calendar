@@ -14,6 +14,7 @@ import User from '../models/User';
 import { checkAndEventuallyUpdateUserToken, getSessionCookie, refreshUserToken } from './core';
 import moment from 'moment';
 import { userDb } from './orm';
+import { getAuthorizationHeader } from './helper';
 
 export const oAuth = (req: Request, res: Response, next: NextFunction) => {
   passport.authenticate('google', {
@@ -53,7 +54,7 @@ export const oAuthCallBack = (req: Request, res: Response, next: NextFunction) =
 };
 
 export const check = async (req: Request, res: Response) => {
-  const token = req.body['token'];
+  const token = getAuthorizationHeader(req);
   if (token) {
     try {
       const user = await checkAndEventuallyUpdateUserToken(token);

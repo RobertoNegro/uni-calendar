@@ -10,27 +10,63 @@
  */
 
 import { Request, Response } from 'express';
+import axios from 'axios';
+import { userOrm } from './orm';
+import { getAuthorizationHeader } from './helper';
 
-import {
-  getHello,
-} from './core';
+export const createUserSettings = async (req: Request, res: Response) => {
+  const universitySlugRequest = req.body['universitySlug'];
+  const token = getAuthorizationHeader(req);
+  try {
+    const authCheck = await axios.get<{id: number}>('http://authentication/',  {
+      headers: {
+        'Authorization': `Bearer ` + token
+      }
+    })
+    if(authCheck.data.id) {
+      const university = await userOrm.getUniversityBySlug(universitySlugRequest);
+      const universitySlug = university?.slug ? university?.slug : '';
+      if(universitySlug) {
+        const user = await userOrm.updateUserSetting(authCheck.data.id, universitySlug);
+        if(user){
+          res.status(201).send(JSON.stringify(user));
+        } else {
+          res.status(404).send({ error: 'User not found'});
+        }
+      } else {
+        res.status(404).send({
+          error: 'University not found',
+        });
+      }
+    } else {
+      res.status(404).send({
+        error: 'User not found',
+      });
+    }
 
-// --- EXAMPLE ---
-
-export const hello = (req: Request, res: Response) => {
-  // If in the URL (GET request) e.g. localhost:8080/?name=pippo
-  const name = req.query['name'];
-
-  // If in body of the request (as json or form-data)
-  // const name = req.body['name'];
-
-  // If in the URL as a parameter e.g. localhost:8080/pippo/ and route defined as '/:name'
-  // const name = req.params['name'];
-
-  if (name != null && typeof name === 'string') {
-    res.send(getHello(name));
-  } else {
-    res.status(400);
-    res.send({ error: 'Invalid name format!' });
+  } catch (e) {
+    console.error(e)
+    res.status(500).send({error: e.toString()});
   }
 };
+export const getUserSettings = async (req: Request, res: Response) => {
+  const token = getAuthorizationHeader(req);
+  try {
+    const authCheck = await axios.get<{ id: number }>('http://authentication/',  {
+      headers: {
+        'Authorization': `Bearer ` + token
+      }
+    })
+    if(authCheck.data.id) {
+      const user = await userOrm.getUserById(authCheck.data.id);
+      if(user) {
+        res.status(200).send(JSON.stringify(user));
+      } else {
+        res.status(404).send({ error: 'User not found'});
+      }
+    }
+  } catch (e) {
+    console.error(e)
+    res.status(500).send({error: e.toString()});
+  }
+}

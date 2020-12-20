@@ -1,11 +1,10 @@
-import { Request } from 'express';
-
 /*********
  * Helper
  *   Here you can define all those functions that can be
  *   useful in several places but does not belong to any
  *   of the other files.
  */
+import { Request } from 'express';
 
 export const getAuthorizationHeader: (req: Request) => string = (req) => {
   const authHeader: string | undefined = req.header("Authorization");
@@ -15,4 +14,3 @@ export const getAuthorizationHeader: (req: Request) => string = (req) => {
   }
   return token;
 };
-

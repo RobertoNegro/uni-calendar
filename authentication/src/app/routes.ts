@@ -16,6 +16,6 @@ const router = express.Router();
 
 router.get('/google/oauth', oAuth);
 router.get('/google/callback', oAuthCallBack);
-router.get('/auth', authCheck);
+router.get('/', authCheck);
 
 export default router;

@@ -9,12 +9,12 @@
 
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { token } from 'morgan';
 import config from '../config';
 import { userDb } from './orm';
 import { isSessionToken, SessionToken } from './models';
 import User from '../models/User';
 import secrets from '../secrets';
+import { getAuthorizationHeader } from './helper';
 
 const passport = require('passport');
 
@@ -50,7 +50,7 @@ export const oAuthCallBack = (req: Request, res: Response, next: NextFunction) =
 };
 
 export const authCheck = async (req: Request, res: Response) => {
-  const token = req.body['token'];
+  const token = getAuthorizationHeader(req);
   if (token) {
     try {
       let decoded = jwt.verify(token, secrets.JWT_KEY);

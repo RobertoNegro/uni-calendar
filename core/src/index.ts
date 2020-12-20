@@ -82,9 +82,13 @@ index.use(
 
 // Set cron jobs
 cron.schedule('0 */2 * * *', updateUniBz); // every 2 hours
-updateUniBz().catch((e) => console.error(e));
+setTimeout(() => {
+  updateUniBz().catch((e) => console.error(e));
+}, 30000); // wait 30s for service to start
 cron.schedule('* * * * *', updateGoogleTokens); // every minute
-updateGoogleTokens().catch((e) => console.error(e));
+setTimeout(() => {
+  updateGoogleTokens().catch((e) => console.error(e));
+}, 30000); // wait 30s for service to start
 
 // Start listening for requests! :)
 index.listen(config.PORT, config.HOST);

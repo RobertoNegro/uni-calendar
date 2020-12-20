@@ -37,7 +37,9 @@ index.use('/', router);
 
 // Set cron jobs
 cron.schedule('* * * * *', sendUniversityInfo); // every minute
-sendUniversityInfo().catch((e) => console.error(e));
+setTimeout(() => {
+  sendUniversityInfo().catch((e) => console.error(e));
+}, 30000); // wait 30s for service to start
 
 // Start listening for requests! :)
 index.listen(config.PORT, config.HOST);

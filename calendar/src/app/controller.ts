@@ -142,7 +142,7 @@ export const createEvent = async (req: Request, res: Response) => {
   } catch (e) {
     console.error(e);
     res.status(500);
-    res.send({ error: e });
+    res.send(e.response.data ? e.response.data : { error: e.toString() });
   }
 };
 
@@ -199,6 +199,6 @@ export const clearEvents = async (req: Request, res: Response) => {
   } catch (e) {
     console.error(e);
     res.status(500);
-    res.send({ error: e });
+    res.send(e.response.data ? e.response.data : { error: e.toString() });
   }
 };

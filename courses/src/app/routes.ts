@@ -10,14 +10,14 @@
  */
 
 import express from 'express';
-import {
-  hello,
-} from './controller';
+import { addCourse, deleteCourse, getCourse, getListCourses, updateCourse } from './controller';
 
 const router = express.Router();
 
-
-router.get('/', hello); // Example
-
+router.get('/', getListCourses);
+router.post('/', addCourse);
+router.get('/:id', getCourse);
+router.delete('/:id', deleteCourse);
+router.put('/:id', updateCourse);
 
 export default router;

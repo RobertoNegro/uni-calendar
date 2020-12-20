@@ -1,5 +1,10 @@
-export default interface CourseSettingsCreation {
+export interface FollowedCourseEntry {
+  id: number;
   universitySlug: string;
+  universityFullName: string;
+  universityShortName: string;
+  universityServerURI: string;
+  universityLastActivity: string;
   courseId: string;
   userId: number;
   asynchronous: boolean;

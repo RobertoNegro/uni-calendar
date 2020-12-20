@@ -53,7 +53,7 @@ export const setUserSettings = async (req: Request, res: Response) => {
   } catch (e) {
     console.error(e);
     res.status(500);
-    res.send({ error: e.toString() });
+    res.send(e.response.data ? e.response.data : { error: e.toString() });
   }
 };
 
@@ -83,6 +83,6 @@ export const getUserSettings = async (req: Request, res: Response) => {
   } catch (e) {
     console.error(e);
     res.status(500);
-    res.send({ error: e.toString() });
+    res.send(e.response.data ? e.response.data : { error: e.toString() });
   }
 };

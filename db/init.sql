@@ -80,13 +80,12 @@ CREATE TABLE "FollowedCourse" (
   "userId" int4 NOT NULL,
   "courseId" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
   "universitySlug" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
-  "asynchronous" bool NOT NULL,
-  "link" varchar(255) COLLATE "pg_catalog"."default",
-  "bgColour" varchar(9) COLLATE "pg_catalog"."default",
-  "fgColour" varchar(9) COLLATE "pg_catalog"."default",
-  "notifyBefore" int8,
-  "notifyEmail" varchar(255) COLLATE "pg_catalog"."default",
-  "notifyTelegram" bool
+  "asynchronous" bool NOT NULL DEFAULT FALSE,
+  "link" varchar(255) COLLATE "pg_catalog"."default" DEFAULT NULL,
+  "colourId" varchar(9) NOT NULL COLLATE "pg_catalog"."default" DEFAULT '0',
+  "notifyBefore" int4 NOT NULL DEFAULT 5,
+  "notifyEmail" varchar(255) COLLATE "pg_catalog"."default" DEFAULT NULL,
+  "notifyTelegram" bool NOT NULL DEFAULT FALSE
 )
 ;
 

@@ -11,26 +11,260 @@
 
 import { Request, Response } from 'express';
 
-import {
-  getHello,
-} from './core';
+import { getHello } from './core';
+import { coursesDb } from './orm';
+import { dbEntryToModel, getAuthorizationHeader } from './helper';
+import axios from 'axios';
+import CourseSettings from '../models/CourseSettings';
+import University from '../models/University';
 
-// --- EXAMPLE ---
+export const getListCourses = async (req: Request, res: Response) => {
+  const token = getAuthorizationHeader(req);
 
-export const hello = (req: Request, res: Response) => {
-  // If in the URL (GET request) e.g. localhost:8080/?name=pippo
-  const name = req.query['name'];
+  try {
+    const authCheck = await axios.get<{ user: { id: number } }>('http://authentication/', {
+      headers: {
+        Authorization: `Bearer ` + token,
+      },
+    });
 
-  // If in body of the request (as json or form-data)
-  // const name = req.body['name'];
+    if (authCheck.data.user.id) {
+      const courses = await coursesDb.listCourseByUserId(authCheck.data.user.id);
 
-  // If in the URL as a parameter e.g. localhost:8080/pippo/ and route defined as '/:name'
-  // const name = req.params['name'];
+      if (courses) {
+        res.status(200);
+        res.send(courses.map(dbEntryToModel));
+      } else {
+        res.status(404);
+        res.send({ error: 'User not found' });
+      }
+    } else {
+      res.status(401);
+      res.send({ error: 'Unauthorized' });
+    }
+  } catch (e) {
+    console.error(e);
+    res.status(500);
+    res.send(e.response.data ? e.response.data : { error: e.toString() });
+  }
+};
 
-  if (name != null && typeof name === 'string') {
-    res.send(getHello(name));
-  } else {
+export const getCourse = async (req: Request, res: Response) => {
+  const token = getAuthorizationHeader(req);
+  const idS = req.params['id'];
+  let id = null;
+  try {
+    id = parseInt(idS);
+  } catch (_) {}
+
+  if (!id) {
     res.status(400);
-    res.send({ error: 'Invalid name format!' });
+    res.send({ error: 'Missing or invalid course ID parameter' });
+    return;
+  }
+
+  try {
+    const authCheck = await axios.get<{ user: { id: number } }>('http://authentication/', {
+      headers: {
+        Authorization: `Bearer ` + token,
+      },
+    });
+
+    if (authCheck.data.user.id) {
+      const course = await coursesDb.getCourseById(id, authCheck.data.user.id);
+
+      if (course) {
+        res.status(200);
+        res.send(dbEntryToModel(course));
+      } else {
+        res.status(404);
+        res.send({ error: 'User not found' });
+      }
+    } else {
+      res.status(401);
+      res.send({ error: 'Unauthorized' });
+    }
+  } catch (e) {
+    console.error(e);
+    res.status(500);
+    res.send(e.response.data ? e.response.data : { error: e.toString() });
+  }
+};
+
+export const deleteCourse = async (req: Request, res: Response) => {
+  const token = getAuthorizationHeader(req);
+  const idS = req.params['id'];
+  let id = null;
+  try {
+    id = parseInt(idS);
+  } catch (_) {}
+  if (!id) {
+    res.status(400);
+    res.send({ error: 'Missing or invalid course ID parameter' });
+    return;
+  }
+
+  try {
+    const authCheck = await axios.get<{ user: { id: number } }>('http://authentication/', {
+      headers: {
+        Authorization: `Bearer ` + token,
+      },
+    });
+
+    if (authCheck.data.user.id) {
+      await coursesDb.deleteCourse(id, authCheck.data.user.id);
+      res.status(200);
+      res.send();
+    } else {
+      res.status(401);
+      res.send({ error: 'Unauthorized' });
+    }
+  } catch (e) {
+    console.error(e);
+    res.status(500);
+    res.send(e.response.data ? e.response.data : { error: e.toString() });
+  }
+};
+
+export const addCourse = async (req: Request, res: Response) => {
+  const token = getAuthorizationHeader(req);
+
+  const universitySlug = req.body['universitySlug'];
+  const courseId = req.body['courseId'];
+
+  const link =
+    req.body['link'] === null || typeof req.body['link'] === 'string'
+      ? req.body['link']
+      : undefined;
+  const colourId = typeof req.body['colourId'] === 'string' ? req.body['colourId'] : undefined;
+  const notifyBefore =
+    typeof req.body['notifyBefore'] === 'number' ? req.body['notifyBefore'] : undefined;
+  const notifyEmail =
+    req.body['notifyEmail'] === null || typeof req.body['notifyEmail'] === 'string'
+      ? req.body['notifyEmail']
+      : undefined;
+  const asynchronous =
+    typeof req.body['asynchronous'] === 'boolean' ? req.body['asynchronous'] : undefined;
+  const notifyTelegram =
+    typeof req.body['notifyTelegram'] === 'boolean' ? req.body['notifyTelegram'] : undefined;
+
+  if (
+    !universitySlug ||
+    typeof universitySlug !== 'string' ||
+    !courseId ||
+    typeof courseId !== 'string'
+  ) {
+    res.status(400);
+    res.send({ error: 'Missing parameters' });
+    return;
+  }
+
+  try {
+    const authCheck = await axios.get<{ user: { id: number } }>('http://authentication/', {
+      headers: {
+        Authorization: `Bearer ` + token,
+      },
+    });
+
+    if (authCheck.data.user.id) {
+      const course = await coursesDb.addCourse(
+        authCheck.data.user.id,
+        universitySlug,
+        courseId,
+        asynchronous,
+        link,
+        colourId,
+        notifyBefore,
+        notifyEmail,
+        notifyTelegram
+      );
+
+      if (course) {
+        res.status(200);
+        res.send(dbEntryToModel(course));
+      } else {
+        res.status(404);
+        res.send({ error: 'User not found' });
+      }
+    } else {
+      res.status(401);
+      res.send({ error: 'Unauthorized' });
+    }
+  } catch (e) {
+    console.error(e);
+    res.status(500);
+    res.send(e.response.data ? e.response.data : { error: e.toString() });
+  }
+};
+
+export const updateCourse = async (req: Request, res: Response) => {
+  const token = getAuthorizationHeader(req);
+  const idS = req.params['id'];
+  let id = null;
+  try {
+    id = parseInt(idS);
+  } catch (_) {}
+  if (!id) {
+    res.status(400);
+    res.send({ error: 'Missing or invalid course ID parameter' });
+    return;
+  }
+
+  const universitySlug =
+    typeof req.body['universitySlug'] === 'string' ? req.body['universitySlug'] : undefined;
+  const courseId = typeof req.body['courseId'] === 'string' ? req.body['courseId'] : undefined;
+
+  const link =
+    req.body['link'] === null || typeof req.body['link'] === 'string'
+      ? req.body['link']
+      : undefined;
+  const colourId = typeof req.body['colourId'] === 'string' ? req.body['colourId'] : undefined;
+  const notifyBefore =
+    typeof req.body['notifyBefore'] === 'number' ? req.body['notifyBefore'] : undefined;
+  const notifyEmail =
+    req.body['notifyEmail'] === null || typeof req.body['notifyEmail'] === 'string'
+      ? req.body['notifyEmail']
+      : undefined;
+  const asynchronous =
+    typeof req.body['asynchronous'] === 'boolean' ? req.body['asynchronous'] : undefined;
+  const notifyTelegram =
+    typeof req.body['notifyTelegram'] === 'boolean' ? req.body['notifyTelegram'] : undefined;
+
+  try {
+    const authCheck = await axios.get<{ user: { id: number } }>('http://authentication/', {
+      headers: {
+        Authorization: `Bearer ` + token,
+      },
+    });
+
+    if (authCheck.data.user.id) {
+      const course = await coursesDb.updateCourse(
+        id,
+        authCheck.data.user.id,
+        universitySlug,
+        courseId,
+        asynchronous,
+        link,
+        colourId,
+        notifyBefore,
+        notifyEmail,
+        notifyTelegram
+      );
+
+      if (course) {
+        res.status(200);
+        res.send(dbEntryToModel(course));
+      } else {
+        res.status(404);
+        res.send({ error: 'User not found' });
+      }
+    } else {
+      res.status(401);
+      res.send({ error: 'Unauthorized' });
+    }
+  } catch (e) {
+    console.error(e);
+    res.status(500);
+    res.send(e.response.data ? e.response.data : { error: e.toString() });
   }
 };

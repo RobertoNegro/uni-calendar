@@ -5,6 +5,6 @@ export default interface EventCreation {
   endTime: number;
   link: string;
   location: string;
-  asyncronous: boolean;
+  asynchronous: boolean;
   color: string;
 }

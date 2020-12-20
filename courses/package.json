@@ -1,5 +1,5 @@
 {
-  "name": "events",
+  "name": "courses",
   "version": "1.0.0",
   "description": "UniCalendar | Courses service",
   "main": "build/index.js",

@@ -14,59 +14,75 @@ import axios from 'axios';
 import { userOrm } from './orm';
 import { getAuthorizationHeader } from './helper';
 
-export const createUserSettings = async (req: Request, res: Response) => {
+export const setUserSettings = async (req: Request, res: Response) => {
   const universitySlugRequest = req.body['universitySlug'];
   const token = getAuthorizationHeader(req);
+
   try {
-    const authCheck = await axios.get<{id: number}>('http://authentication/',  {
+    const authCheck = await axios.get<{ user: { id: number } }>('http://authentication/', {
       headers: {
-        'Authorization': `Bearer ` + token
-      }
-    })
-    if(authCheck.data.id) {
+        Authorization: `Bearer ` + token,
+      },
+    });
+
+    if (authCheck.data.user.id) {
       const university = await userOrm.getUniversityBySlug(universitySlugRequest);
-      const universitySlug = university?.slug ? university?.slug : '';
-      if(universitySlug) {
-        const user = await userOrm.updateUserSetting(authCheck.data.id, universitySlug);
-        if(user){
-          res.status(201).send(JSON.stringify(user));
+      const universitySlug = university && university.slug ? university.slug : null;
+
+      if (universitySlug) {
+        const settings = await userOrm.updateUserSetting(authCheck.data.user.id, universitySlug);
+        if (settings) {
+          res.status(201);
+          res.send(settings);
         } else {
-          res.status(404).send({ error: 'User not found'});
+          res.status(404);
+          res.send({ error: 'User not found' });
         }
       } else {
-        res.status(404).send({
+        res.status(404);
+        res.send({
           error: 'University not found',
         });
       }
     } else {
-      res.status(404).send({
-        error: 'User not found',
+      res.status(401);
+      res.send({
+        error: 'Unauthorized',
       });
     }
-
   } catch (e) {
-    console.error(e)
-    res.status(500).send({error: e.toString()});
+    console.error(e);
+    res.status(500);
+    res.send({ error: e.toString() });
   }
 };
+
 export const getUserSettings = async (req: Request, res: Response) => {
   const token = getAuthorizationHeader(req);
+
   try {
-    const authCheck = await axios.get<{ id: number }>('http://authentication/',  {
+    const authCheck = await axios.get<{ user: { id: number } }>('http://authentication/', {
       headers: {
-        'Authorization': `Bearer ` + token
-      }
-    })
-    if(authCheck.data.id) {
-      const user = await userOrm.getUserById(authCheck.data.id);
-      if(user) {
-        res.status(200).send(JSON.stringify(user));
+        Authorization: `Bearer ` + token,
+      },
+    });
+
+    if (authCheck.data.user.id) {
+      const settings = await userOrm.getUserSettingsById(authCheck.data.user.id);
+      if (settings) {
+        res.status(200);
+        res.send(settings);
       } else {
-        res.status(404).send({ error: 'User not found'});
+        res.status(404);
+        res.send({ error: 'User not found' });
       }
+    } else {
+      res.status(401);
+      res.send({ error: 'Unauthorized' });
     }
   } catch (e) {
-    console.error(e)
-    res.status(500).send({error: e.toString()});
+    console.error(e);
+    res.status(500);
+    res.send({ error: e.toString() });
   }
-}
+};

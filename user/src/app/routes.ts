@@ -10,14 +10,11 @@
  */
 
 import express from 'express';
-import {
-  createUserSettings, getUserSettings
-} from './controller';
+import { getUserSettings, setUserSettings } from './controller';
 
 const router = express.Router();
 
-
-router.post('/settings', createUserSettings);
+router.post('/settings', setUserSettings);
 router.get('/settings', getUserSettings);
 
 export default router;

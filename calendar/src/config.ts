@@ -5,4 +5,5 @@ export default {
   HOST: '0.0.0.0',
   GOOGLE_CLIENT_ID: secrets.GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET: secrets.GOOGLE_CLIENT_SECRET,
+  DB: 'postgres://postgres:password@db/unicalendar_db',
 };

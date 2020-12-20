@@ -28,7 +28,7 @@ export const triggerUpdateCache = async (req: Request, res: Response) => {
   const page: string | undefined = req.query['page'] ? `${req.query['page']}` : undefined;
 
   if (!page) {
-    await cacheDb.clearCourses();
+    await cacheDb.clearEvents();
   }
 
   const [result, nextPage] = await updateCache(year, page);

@@ -16,7 +16,8 @@
     "errorhandler": "^1.5.1",
     "express": "^4.17.1",
     "googleapis": "^66.0.0",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "pg-promise": "^10.8.6"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
@@ -27,6 +28,7 @@
     "@types/express-serve-static-core": "^4.17.17",
     "@types/morgan": "^1.9.2",
     "@types/node": "^14.14.14",
+    "@types/pg-promise": "^5.4.3",
     "eslint": "^7.2.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-airbnb-base": "^14.2.1",

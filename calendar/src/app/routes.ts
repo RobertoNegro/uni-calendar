@@ -14,7 +14,7 @@ import { clearEvents, createEvent } from './controller';
 
 const router = express.Router();
 
-router.post('/event', createEvent);
-router.post('/clear', clearEvents);
+router.post('/event/:id', createEvent);
+router.post('/clear/:id', clearEvents);
 
 export default router;

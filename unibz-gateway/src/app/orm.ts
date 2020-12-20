@@ -14,8 +14,8 @@ export class CacheDb {
     return str;
   }
 
-  async clearCourses() {
-    return await this.db.none('TRUNCATE TABLE "Course" CASCADE');
+  async clearEvents() {
+    return await this.db.none('TRUNCATE TABLE "Event" CASCADE');
   }
 
   async getCourses() {

@@ -12,16 +12,27 @@
 import { Request, Response } from 'express';
 
 import { google } from 'googleapis';
-import axios from 'axios';
-import User from '../models/User';
 import config from '../config';
+import { userOrm } from './orm';
 const OAuth2 = google.auth.OAuth2;
 
 export const createEvent = async (req: Request, res: Response) => {
-  const token = req.body['token'];
-  if (!token) {
+  const idS = req.params['id'];
+  let id = null;
+  try {
+    id = parseInt(idS);
+  } catch (e) {}
+
+  if (!id) {
     res.status(401);
     res.send({ error: 'No token provided' });
+    return;
+  }
+
+  const user = await userOrm.getUserById(id);
+  if (!user) {
+    res.status(404);
+    res.send({ error: 'No user found with that id' });
     return;
   }
 
@@ -34,28 +45,9 @@ export const createEvent = async (req: Request, res: Response) => {
   const asynchronous = req.body['asynchronous'];
   const color = req.body['color'];
 
-  if (
-    !startTime ||
-    !endTime ||
-    !name ||
-    !description ||
-    !link ||
-    !location ||
-    !asynchronous ||
-    !color
-  ) {
+  if (!startTime || !endTime || !name || !asynchronous || !color) {
     res.status(400);
     res.send({ error: 'Missing parameters' });
-    return;
-  }
-
-  const userReq = await axios.post<{ user: User }>('http://authentication/', {
-    token: token,
-  });
-  const user = userReq.data.user;
-  if (!user) {
-    res.status(401);
-    res.send({ error: 'Invalid token' });
     return;
   }
 
@@ -120,8 +112,11 @@ export const createEvent = async (req: Request, res: Response) => {
         calendarId: gUniCalendarId,
         requestBody: {
           summary: name,
-          description: (description.trim().length > 0 ? description.trim() + '\n' : '') + link,
-          location: location,
+          description:
+            '' +
+            (description && description.trim().length > 0 ? description.trim() + '\n' : '') +
+            (link ? link : ''),
+          location: location ? location : undefined,
           start: {
             dateTime: startTime,
           },
@@ -147,20 +142,22 @@ export const createEvent = async (req: Request, res: Response) => {
 };
 
 export const clearEvents = async (req: Request, res: Response) => {
-  const token = req.body['token'];
-  if (!token) {
+  const idS = req.params['id'];
+  let id = null;
+  try {
+    id = parseInt(idS);
+  } catch (e) {}
+
+  if (!id) {
     res.status(401);
     res.send({ error: 'No token provided' });
     return;
   }
 
-  const userReq = await axios.post<{ user: User }>('http://authentication/', {
-    token: token,
-  });
-  const user = userReq.data.user;
+  const user = await userOrm.getUserById(id);
   if (!user) {
-    res.status(401);
-    res.send({ error: 'Invalid token' });
+    res.status(404);
+    res.send({ error: 'No user found with that id' });
     return;
   }
 

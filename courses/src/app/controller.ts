@@ -11,12 +11,9 @@
 
 import { Request, Response } from 'express';
 
-import { getHello } from './core';
 import { coursesDb } from './orm';
 import { dbEntryToModel, getAuthorizationHeader } from './helper';
 import axios from 'axios';
-import CourseSettings from '../models/CourseSettings';
-import University from '../models/University';
 
 export const getListCourses = async (req: Request, res: Response) => {
   const token = getAuthorizationHeader(req);
@@ -130,7 +127,7 @@ export const addCourse = async (req: Request, res: Response) => {
   const token = getAuthorizationHeader(req);
 
   const universitySlug = req.body['universitySlug'];
-  const courseId = req.body['courseId'];
+  let courseId = req.body['courseId'];
 
   const link =
     req.body['link'] === null || typeof req.body['link'] === 'string'
@@ -152,12 +149,14 @@ export const addCourse = async (req: Request, res: Response) => {
     !universitySlug ||
     typeof universitySlug !== 'string' ||
     !courseId ||
-    typeof courseId !== 'string'
+    (typeof courseId !== 'string' && typeof courseId !== 'number')
   ) {
     res.status(400);
     res.send({ error: 'Missing parameters' });
     return;
   }
+
+  courseId = `${courseId}`;
 
   try {
     const authCheck = await axios.get<{ user: { id: number } }>('http://authentication/', {
@@ -212,7 +211,10 @@ export const updateCourse = async (req: Request, res: Response) => {
 
   const universitySlug =
     typeof req.body['universitySlug'] === 'string' ? req.body['universitySlug'] : undefined;
-  const courseId = typeof req.body['courseId'] === 'string' ? req.body['courseId'] : undefined;
+  const courseId =
+    typeof req.body['courseId'] === 'string' || typeof req.body['courseId'] === 'number'
+      ? `${req.body['courseId']}`
+      : undefined;
 
   const link =
     req.body['link'] === null || typeof req.body['link'] === 'string'

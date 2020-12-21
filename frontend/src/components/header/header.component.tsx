@@ -1,6 +1,5 @@
 import {Nav, Navbar} from "react-bootstrap";
 
-// @ts-ignore
 const Header = () => (
     <Navbar className='bg-red' expand="lg" variant='dark'>
         <Navbar.Brand href="#home" className='app-name'><img

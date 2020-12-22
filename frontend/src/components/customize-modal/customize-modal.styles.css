@@ -1,0 +1,10 @@
+.color {
+    width: 20px;
+    height: 20px;
+    border-radius: 2px;
+}
+.card-color {
+    padding: .375rem .75rem;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+}

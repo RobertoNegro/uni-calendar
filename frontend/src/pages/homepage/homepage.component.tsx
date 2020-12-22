@@ -2,6 +2,7 @@ import {Button, Card, Col, Container, ListGroup, ListGroupItem, Row} from "react
 import Header from "../../components/header/header.component";
 import React from "react";
 import DeleteModal from "../../components/delete-modal/delete-modal.component";
+import CustomizeModal from "../../components/customize-modal/customize-modal.component";
 
 class HomePage extends React.Component<any, any> {
     constructor(props: any) {
@@ -9,15 +10,16 @@ class HomePage extends React.Component<any, any> {
         this.state = {
             currentUser: null,
             courses: null,
-            deleteModal: false
+            showHideDeleteModal: false,
+            showHideCustomizeModal: false
         }
     }
 
-    handleClose =  () => {
-        this.setState({deleteModal : false});
+    handleDeleteModal =  () => {
+        this.setState({showHideDeleteModal : !this.state.showHideDeleteModal});
     }
-    handleShow =  () =>  {
-        this.setState({deleteModal : true});
+    handleCustomizeModal =  () => {
+        this.setState({showHideCustomizeModal : !this.state.showHideCustomizeModal});
     }
     render() {
         return (
@@ -34,8 +36,8 @@ class HomePage extends React.Component<any, any> {
                                             <Col>Machine Learning</Col>
                                             <Col className='text-right'>1 year</Col>
                                             <Col className='text-right'>
-                                                <Button variant="light mr-1"><i className="fas fa-cog"></i></Button>
-                                                <Button variant="light" onClick={this.handleShow}><i className="fas fa-trash"></i></Button>
+                                                <Button variant="light mr-1" onClick={this.handleCustomizeModal}><i className="fas fa-cog"></i></Button>
+                                                <Button variant="light" onClick={this.handleDeleteModal}><i className="fas fa-trash"></i></Button>
                                             </Col>
                                         </Row>
                                     </ListGroupItem>
@@ -43,7 +45,8 @@ class HomePage extends React.Component<any, any> {
                         </Card.Body>
                     </Card>
                 </Container>
-                <DeleteModal show={this.state.deleteModal} handleClose={this.handleClose}/>
+                <DeleteModal show={this.state.showHideDeleteModal} handleClose={this.handleDeleteModal}/>
+                <CustomizeModal show={this.state.showHideCustomizeModal} handleClose={this.handleCustomizeModal}/>
             </div>
         );
     }

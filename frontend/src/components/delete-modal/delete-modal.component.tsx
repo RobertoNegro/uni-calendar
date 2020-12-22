@@ -5,7 +5,10 @@ class DeleteModal extends Component<{ show: any, handleClose: any }> {
     render() {
         let {show, handleClose} = this.props;
         return (
-            <Modal show={show} onHide={handleClose}>
+            <Modal
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+                show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>Delete course from list</Modal.Title>
                 </Modal.Header>

@@ -19,8 +19,6 @@ export const updateGoogleTokens = async () => {
 
 export const sendEmailNotification = async () => {
   console.log('Checking email notifications..');
-  const users = await coreDb.getUserList();
-  if (users) {
 };
 
 export const updateCalendars = async () => {

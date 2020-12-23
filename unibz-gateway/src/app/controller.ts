@@ -36,7 +36,12 @@ export const triggerUpdateCache = async (req: Request, res: Response) => {
   for (let i = 0; i < result.length; i++) {
     const id = await cacheDb.addCourse(result[i].name, result[i].professor);
     if (id) {
-      await cacheDb.addEvent(id, moment(result[i].start), moment(result[i].end));
+      await cacheDb.addEvent(
+        id,
+        moment(result[i].start),
+        moment(result[i].end),
+        result[i].location
+      );
     }
   }
 
@@ -62,6 +67,26 @@ export const courses = async (req: Request, res: Response) => {
   res.send(courses);
 };
 
+export const course = async (req: Request, res: Response) => {
+  let courseId: number | null = null;
+  try {
+    courseId = parseInt(req.params['id']);
+  } catch (e) {}
+
+  if (courseId == null) {
+    res.status(400);
+    res.send();
+  } else {
+    const course = await cacheDb.getCourseById(courseId);
+    if (!course) {
+      res.status(404);
+      res.send();
+    } else {
+      res.send({ ...course, university: getInfo() });
+    }
+  }
+};
+
 export const events = async (req: Request, res: Response) => {
   let courseId: number | null = null;
   try {
@@ -85,7 +110,7 @@ export const events = async (req: Request, res: Response) => {
             course: `${courseId}`,
             startTime: event.start,
             endTime: event.end,
-            location: null,
+            location: event.location,
             university: getInfo(),
           };
         })

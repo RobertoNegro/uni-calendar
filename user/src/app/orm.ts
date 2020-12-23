@@ -27,6 +27,12 @@ export class UserDb {
       slug
     );
   }
+  async clearFollowedCourse(userId: number, newUniversitySlug: string) {
+    return await this.db.none(
+      'DELETE FROM "FollowedCourse" where "userId" = $1 AND "universitySlug" LIKE $2',
+      [userId, newUniversitySlug]
+    );
+  }
 }
 
 export const userOrm = new UserDb();

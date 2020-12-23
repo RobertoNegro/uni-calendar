@@ -1,3 +1,6 @@
 export default interface TelegramNotification {
-    message: string;
+  id: number;
+  followedCourseId: number;
+  time: number;
+  message: string;
 }

@@ -1,4 +1,7 @@
 export default interface EmailNotification {
-    message: string;
-    subject: string;
+  id: number;
+  followedCourseId: number;
+  time: number;
+  message: string;
+  subject: string;
 }

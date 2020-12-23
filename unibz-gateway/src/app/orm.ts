@@ -59,16 +59,15 @@ export class CacheDb {
     return res && res.id ? res.id : null;
   }
 
-  async addEvent(courseId: number, start: Moment, end: Moment) {
-    await this.db.none('INSERT INTO "Event"("courseId", "start", "end") VALUES($1, $2, $3)', [
-      courseId,
-      start.toISOString(),
-      end.toISOString(),
-    ]);
+  async addEvent(courseId: number, start: Moment, end: Moment, location?: string | null) {
+    await this.db.none(
+      'INSERT INTO "Event"("courseId", "start", "end", "location") VALUES($1, $2, $3, $4)',
+      [courseId, start.toISOString(), end.toISOString(), location]
+    );
   }
 
   async getEventsByCourseId(courseId: number) {
-    return await this.db.manyOrNone<{ id: number; start: string; end: string }>(
+    return await this.db.manyOrNone<{ id: number; start: string; end: string; location: string }>(
       'SELECT * FROM "Event" WHERE "courseId" = $1',
       courseId
     );

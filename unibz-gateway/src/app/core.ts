@@ -55,6 +55,9 @@ const innerPageFunction: (year: number) => [CachedEvent[], string | undefined] =
               const courseName = courseContainer.querySelector('h3');
               const courseTime = courseContainer.querySelector('.u-fw-bold');
               const courseProfessor = courseContainer.querySelector('.u-ls-1 span');
+              const courseLocation = courseContainer.parentElement
+                ? courseContainer.parentElement.querySelector('.u-w-140')
+                : null;
 
               if (
                 courseName &&
@@ -78,6 +81,10 @@ const innerPageFunction: (year: number) => [CachedEvent[], string | undefined] =
                   result.push({
                     name: courseName.textContent.trim(),
                     professor: courseProfessor.textContent.trim(),
+                    location:
+                      courseLocation && courseLocation.textContent
+                        ? courseLocation.textContent.trim()
+                        : null,
                     start: `${year}-${month}-${day} ${startTime.trim()}`,
                     end: `${year}-${month}-${day} ${endTime.trim()}`,
                   });

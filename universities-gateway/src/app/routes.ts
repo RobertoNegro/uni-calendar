@@ -10,13 +10,14 @@
  */
 
 import express from 'express';
-import { addUniversity, courseEvents, courses, universitiesList } from './controller';
+import { addUniversity, course, courseEvents, courses, universitiesList } from './controller';
 
 const router = express.Router();
 
 router.get('/universities', universitiesList);
 router.post('/university', addUniversity);
 router.get('/university/:slug/courses', courses);
-router.get('/university/:slug/course/:courseId', courseEvents);
+router.get('/university/:slug/course/:courseId', course);
+router.get('/university/:slug/course/:courseId/events', courseEvents);
 
 export default router;

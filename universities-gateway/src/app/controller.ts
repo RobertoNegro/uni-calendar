@@ -97,6 +97,58 @@ export const courses = async (req: Request, res: Response) => {
   }
 };
 
+export const course = async (req: Request, res: Response) => {
+  const slug = req.params['slug'];
+  if (!slug) {
+    res.status(400);
+    res.send({
+      error: 'No slug provided',
+    });
+    return;
+  }
+  const courseId = req.params['courseId'];
+  if (!courseId) {
+    res.status(400);
+    res.send({
+      error: 'No course ID provided',
+    });
+    return;
+  }
+
+  let university: University | null = null;
+  try {
+    university = await universitiesDb.getUniversityBySlug(slug);
+  } catch (e) {
+    console.error(e);
+    res.status(500);
+    res.send({
+      error: 'Error while fetching the university from the database: ' + e.toString(),
+    });
+    return;
+  }
+
+  if (!university) {
+    res.status(404);
+    res.send({
+      error: 'No university found with that slug',
+    });
+    return;
+  }
+
+  try {
+    const course = await axios.get<Course>(
+      'http://' + university.serverURI + '/course/' + courseId
+    );
+    res.send(course.data);
+  } catch (e) {
+    console.error(e);
+    res.status(503);
+    res.send({
+      error: 'Error while trying to fetch the course: ' + e.toString(),
+    });
+  }
+};
+
 export const courseEvents = async (req: Request, res: Response) => {
   const slug = req.params['slug'];
   if (!slug) {
@@ -137,7 +189,7 @@ export const courseEvents = async (req: Request, res: Response) => {
 
   try {
     const courseEvents = await axios.get<CourseEvent[]>(
-      'http://' + university.serverURI + '/course/' + courseId
+      'http://' + university.serverURI + '/course/' + courseId + '/events'
     );
     res.send(courseEvents.data);
   } catch (e) {

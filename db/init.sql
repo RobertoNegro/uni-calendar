@@ -65,7 +65,7 @@ DROP TABLE IF EXISTS "EmailNotification";
 CREATE TABLE "EmailNotification" (
   "id" int4 NOT NULL DEFAULT nextval('"EmailNotification_id_seq"'::regclass),
   "followedCourseId" int4 NOT NULL,
-  "time" date NOT NULL,
+  "time" timestamp(6) NOT NULL,
   "subject" varchar(65535) COLLATE "pg_catalog"."default" NOT NULL,
   "message" varchar(65535) COLLATE "pg_catalog"."default" NOT NULL
 )
@@ -96,7 +96,7 @@ DROP TABLE IF EXISTS "TelegramNotification";
 CREATE TABLE "TelegramNotification" (
   "id" int4 NOT NULL DEFAULT nextval('"TelegramNotification_id_seq"'::regclass),
   "followedCourseId" int4 NOT NULL,
-  "time" date NOT NULL,
+  "time" timestamp(6) NOT NULL,
   "message" varchar(65535) COLLATE "pg_catalog"."default" NOT NULL
 )
 ;

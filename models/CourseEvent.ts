@@ -4,7 +4,7 @@ export default interface CourseEvent {
   name: string;
   startTime: number;
   endTime: number;
-  location: string;
+  location: string | null;
   university: UniversityCreation;
   course: string;
 }

@@ -56,6 +56,16 @@ export class UniCalendarBot {
       }
     });
 
+    this.bot.onText(/\/stop(\s+(.+))?/, async (msg, match) => {
+      const chatId = msg.chat.id;
+
+      if (match) {
+        console.log(`[BOT] Received stop from ${chatId}`);
+        await this.db.deleteSessionByChatId(chatId);
+        this.bot.sendMessage(chatId, `See you!`).catch((e) => console.error(e));
+      }
+    });
+
     this.bot.on('message', (msg) => {
       const chatId = msg.chat.id;
       console.log(`[BOT] Received message from ${chatId}:`, msg.text);

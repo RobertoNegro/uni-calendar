@@ -41,10 +41,11 @@ CREATE TABLE "Course" (
 -- ----------------------------
 DROP TABLE IF EXISTS "Event";
 CREATE TABLE "Event" (
+  "id" int4 NOT NULL DEFAULT nextval('"Event_id_seq"'::regclass),
+  "courseId" int4 NOT NULL,
   "start" timestamp NOT NULL,
   "end" timestamp NOT NULL,
-  "id" int4 NOT NULL DEFAULT nextval('"Event_id_seq"'::regclass),
-  "courseId" int4 NOT NULL
+  "location" varchar(255) COLLATE "pg_catalog"."default"
 )
 ;
 

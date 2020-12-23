@@ -19,11 +19,14 @@ export const setUserSettings = async (req: Request, res: Response) => {
   const token = getAuthorizationHeader(req);
 
   try {
-    const authCheck = await axios.get<{ user: { id: number } }>('http://authentication/', {
-      headers: {
-        Authorization: `Bearer ` + token,
-      },
-    });
+    const authCheck = await axios.get<{ user: { id: number; universitySlug: string } }>(
+      'http://authentication/',
+      {
+        headers: {
+          Authorization: `Bearer ` + token,
+        },
+      }
+    );
 
     if (authCheck.data.user.id) {
       const university = await userOrm.getUniversityBySlug(universitySlugRequest);
@@ -31,6 +34,11 @@ export const setUserSettings = async (req: Request, res: Response) => {
 
       if (universitySlug) {
         const settings = await userOrm.updateUserSetting(authCheck.data.user.id, universitySlug);
+
+        if (universitySlug !== authCheck.data.user.universitySlug) {
+          await userOrm.clearFollowedCourse(authCheck.data.user.id, universitySlug);
+        }
+
         if (settings) {
           res.status(201);
           res.send(settings);

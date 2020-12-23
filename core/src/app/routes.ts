@@ -10,14 +10,10 @@
  */
 
 import express from 'express';
-import {
-  hello,
-} from './controller';
+import { updateCalendar } from './controller';
 
 const router = express.Router();
 
-
-router.get('/', hello); // Example
-
+router.get('/update', updateCalendar);
 
 export default router;

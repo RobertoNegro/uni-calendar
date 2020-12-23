@@ -4,4 +4,6 @@ export default interface EmailNotification {
   time: number;
   message: string;
   subject: string;
+  recipient: string;
+  sent: boolean;
 }

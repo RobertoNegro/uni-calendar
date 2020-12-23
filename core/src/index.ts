@@ -17,7 +17,13 @@ import cron from 'node-cron';
 import config from './config';
 import router from './app/routes';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import { updateCalendars, updateGoogleTokens, updateUniBz } from './app/jobs';
+import {
+  sendEmailNotification,
+  sendTelegramNotification,
+  updateCalendars,
+  updateGoogleTokens,
+  updateUniBz,
+} from './app/jobs';
 
 const index = express();
 
@@ -71,17 +77,40 @@ index.use(
   })
 );
 
+index.use(
+  '/telegram',
+  createProxyMiddleware({
+    target: 'http://notification/telegram/credentials',
+    changeOrigin: true,
+    pathRewrite: { '^/telegram': '' },
+  })
+);
+
 // Set cron jobs
-cron.schedule('0 */2 * * *', updateUniBz); // every 2 hours
+cron.schedule('0 0 * * *', updateUniBz); // at midnight
 setTimeout(() => {
   updateUniBz().catch((e) => console.error(e));
 }, 30000); // wait 30s for service to start
+
+cron.schedule('0 */6 * * *', updateCalendars); // every 6 hours
+setTimeout(() => {
+  updateCalendars().catch((e) => console.error(e));
+}, 30000); // wait 30s for service to start
+
 cron.schedule('* * * * *', updateGoogleTokens); // every minute
 setTimeout(() => {
   updateGoogleTokens().catch((e) => console.error(e));
 }, 30000); // wait 30s for service to start
 
-updateCalendars().catch((e) => console.error(e));
+cron.schedule('* * * * *', sendEmailNotification); // every minute
+setTimeout(() => {
+  sendEmailNotification().catch((e) => console.error(e));
+}, 30000); // wait 30s for service to start
+
+cron.schedule('* * * * *', sendTelegramNotification); // every minute
+setTimeout(() => {
+  sendTelegramNotification().catch((e) => console.error(e));
+}, 30000); // wait 30s for service to start
 
 // Start listening for requests! :)
 index.listen(config.PORT, config.HOST);

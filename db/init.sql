@@ -66,8 +66,10 @@ CREATE TABLE "EmailNotification" (
   "id" int4 NOT NULL DEFAULT nextval('"EmailNotification_id_seq"'::regclass),
   "followedCourseId" int4 NOT NULL,
   "time" timestamp(6) NOT NULL,
+  "recipient" varchar(65535) COLLATE "pg_catalog"."default" NOT NULL,
   "subject" varchar(65535) COLLATE "pg_catalog"."default" NOT NULL,
-  "message" varchar(65535) COLLATE "pg_catalog"."default" NOT NULL
+  "message" varchar(65535) COLLATE "pg_catalog"."default" NOT NULL,
+  "sent" bool NOT NULL DEFAULT FALSE
 )
 ;
 
@@ -95,9 +97,11 @@ CREATE TABLE "FollowedCourse" (
 DROP TABLE IF EXISTS "TelegramNotification";
 CREATE TABLE "TelegramNotification" (
   "id" int4 NOT NULL DEFAULT nextval('"TelegramNotification_id_seq"'::regclass),
+  "userId" int4 NOT NULL,
   "followedCourseId" int4 NOT NULL,
   "time" timestamp(6) NOT NULL,
-  "message" varchar(65535) COLLATE "pg_catalog"."default" NOT NULL
+  "message" varchar(65535) COLLATE "pg_catalog"."default" NOT NULL,
+  "sent" bool NOT NULL DEFAULT FALSE
 )
 ;
 
@@ -125,7 +129,6 @@ CREATE TABLE "User" (
   "googleExpiringTime" timestamp(6) NOT NULL,
   "googleRefreshToken" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
   "universitySlug" varchar(255) COLLATE "pg_catalog"."default",
-  "telegramToken" varchar(255) COLLATE "pg_catalog"."default",
   "firstName" varchar(255) COLLATE "pg_catalog"."default",
   "lastName" varchar(255) COLLATE "pg_catalog"."default",
   "picture" varchar(255) COLLATE "pg_catalog"."default"

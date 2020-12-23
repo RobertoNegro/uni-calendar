@@ -8,13 +8,25 @@ export default {
   MESSAGE: (
     course: string,
     async: boolean,
-    time: number,
+    notifyBefore: number,
+    startTime: string,
+    endTime: string,
     url?: string | null,
     location?: string | null
   ) =>
     `The course ${course}` +
     (async ? ` (asynchronous course)` : ``) +
-    ` is starting in ${moment.duration(time, 'seconds').humanize()}!` +
+    ` is starting in ${moment.duration(notifyBefore, 'seconds').humanize()} (${moment(
+      startTime
+    ).format('HH:mm')} - ${moment(endTime).format('HH:mm')} ${moment(endTime).format(
+      'YYYY/MM/DD'
+    )})!` +
     (location ? `\nLocation: ${location}` : '') +
     (url ? `\nJoin the meeting: ${url}` : ''),
+  SUBJECT: (course: string, notifyBefore: number, startTime: string, endTime: string) =>
+    `EVENT: ${course} in ${moment.duration(notifyBefore, 'seconds').humanize()} (${moment(
+      startTime
+    ).format('HH:mm')} - ${moment(endTime).format('HH:mm')} ${moment(endTime).format(
+      'YYYY/MM/DD'
+    )})`,
 };

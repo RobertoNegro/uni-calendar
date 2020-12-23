@@ -1,4 +1,4 @@
-import University from './University';
+import University from "./University";
 
 export default interface User {
   id: number;
@@ -7,7 +7,6 @@ export default interface User {
   googleExpiringTime: string;
   googleRefreshToken: string;
   university?: University;
-  telegramToken?: string;
   firstName?: string;
   lastName?: string;
   picture?: string;

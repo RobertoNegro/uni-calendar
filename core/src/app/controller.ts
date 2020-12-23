@@ -10,27 +10,30 @@
  */
 
 import { Request, Response } from 'express';
+import { updateUserCalendar } from './core';
+import axios from 'axios';
+import { getAuthorizationHeader } from './helper';
 
-import {
-  getHello,
-} from './core';
+export const updateCalendar = async (req: Request, res: Response) => {
+  const token = getAuthorizationHeader(req);
 
-// --- EXAMPLE ---
+  try {
+    const authCheck = await axios.get<{ user: { id: number } }>('http://authentication/', {
+      headers: {
+        Authorization: `Bearer ` + token,
+      },
+    });
 
-export const hello = (req: Request, res: Response) => {
-  // If in the URL (GET request) e.g. localhost:8080/?name=pippo
-  const name = req.query['name'];
-
-  // If in body of the request (as json or form-data)
-  // const name = req.body['name'];
-
-  // If in the URL as a parameter e.g. localhost:8080/pippo/ and route defined as '/:name'
-  // const name = req.params['name'];
-
-  if (name != null && typeof name === 'string') {
-    res.send(getHello(name));
-  } else {
-    res.status(400);
-    res.send({ error: 'Invalid name format!' });
+    if (authCheck.data.user.id) {
+      await updateUserCalendar(authCheck.data.user.id);
+      res.send();
+    } else {
+      res.status(401);
+      res.send({ error: 'Unauthorized' });
+    }
+  } catch (e) {
+    console.error(e);
+    res.status(500);
+    res.send(e.response.data ? e.response.data : { error: e.toString() });
   }
 };

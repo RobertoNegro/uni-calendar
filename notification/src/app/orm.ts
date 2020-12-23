@@ -19,7 +19,7 @@ export class TelegramDb {
   async getCredentials(userId: number) {
     return await this.db.oneOrNone<Credentials>(
       'SELECT * FROM "Credentials" WHERE "userId" = $1 and "expires" > now()',
-      userId
+      [userId]
     );
   }
 

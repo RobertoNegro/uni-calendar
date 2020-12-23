@@ -17,6 +17,7 @@ import { TelegramDb } from './orm';
 import stripHtml from 'string-strip-html';
 import nodemailer from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
+import axios from 'axios';
 
 const nanoid = customAlphabet('1234567890', 6);
 
@@ -53,12 +54,38 @@ export const telegram = async (req: Request, res: Response) => {
   res.send({ sentTo });
 };
 
-export const telegramCredentials = async (req: Request, res: Response) => {
-  const userId = req.body['userId'];
-  const secret = nanoid();
-  const result = await telegramDb.addCredentials(userId, secret);
+export const getAuthorizationHeader: (req: Request) => string = (req) => {
+  const authHeader: string | undefined = req.header('Authorization');
+  let token = authHeader ? authHeader : '';
+  if (token.startsWith('Bearer ')) {
+    token = token.slice(7, token.length);
+  }
+  return token;
+};
 
-  res.send(result);
+export const telegramCredentials = async (req: Request, res: Response) => {
+  const token = getAuthorizationHeader(req);
+
+  try {
+    const authCheck = await axios.get<{ user: { id: number } }>('http://authentication/', {
+      headers: {
+        Authorization: `Bearer ` + token,
+      },
+    });
+
+    if (authCheck.data.user.id) {
+      const secret = nanoid();
+      const result = await telegramDb.addCredentials(authCheck.data.user.id, secret);
+      res.send(result);
+    } else {
+      res.status(401);
+      res.send({ error: 'Unauthorized' });
+    }
+  } catch (e) {
+    console.error(e);
+    res.status(500);
+    res.send(e.response.data ? e.response.data : { error: e.toString() });
+  }
 };
 
 export const email = async (req: Request, res: Response) => {

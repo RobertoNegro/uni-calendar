@@ -16,6 +16,6 @@ const router = express.Router();
 
 router.post('/email', email);
 router.post('/telegram', telegram);
-router.post('/telegram/credentials', telegramCredentials);
+router.get('/telegram/credentials', telegramCredentials);
 
 export default router;

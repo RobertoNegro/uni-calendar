@@ -38,43 +38,48 @@ export const updateUserCalendar = async (userId: number) => {
     for (let z = 0; z < events.data.length; z++) {
       const event = events.data[z];
 
-      if (followedCourse.notifyTelegram) {
-        console.log(`Creating telegram notification`);
+      if (moment(event.startTime).isAfter(moment())) {
+        if (followedCourse.notifyTelegram) {
+          console.log(`Creating telegram notification`);
 
-        await coreDb.createTelegramNotifications(
-          followedCourse.id,
-          moment(event.startTime).subtract(followedCourse.notifyBefore, 'minutes').toISOString(),
-          userId,
-          config.MESSAGE(
-            course.name,
-            followedCourse.asynchronous,
-            followedCourse.notifyBefore,
-            event.startTime,
-            event.endTime,
-            followedCourse.link,
-            event.location
-          )
-        );
-      }
-
-      if (followedCourse.notifyEmail) {
-        console.log(`Creating email notification`);
-
-        await coreDb.createEmailNotifications(
-          followedCourse.id,
-          moment(event.startTime).subtract(followedCourse.notifyBefore, 'minutes').toISOString(),
-          followedCourse.notifyEmail,
-          config.SUBJECT(course.name, followedCourse.notifyBefore, event.startTime, event.endTime),
-          config.MESSAGE(
-            course.name,
-            followedCourse.asynchronous,
-            followedCourse.notifyBefore,
-            event.startTime,
-            event.endTime,
-            followedCourse.link,
-            event.location
-          )
-        );
+          await coreDb.createTelegramNotifications(
+            followedCourse.id,
+            moment(event.startTime).subtract(followedCourse.notifyBefore, 'minutes').toISOString(),
+            userId,
+            config.MESSAGE(
+              course.name,
+              followedCourse.asynchronous,
+              followedCourse.notifyBefore,
+              event.startTime,
+              event.endTime,
+              followedCourse.link,
+              event.location
+            )
+          );
+        }
+        if (followedCourse.notifyEmail) {
+          console.log(`Creating email notification`);
+          await coreDb.createEmailNotifications(
+            followedCourse.id,
+            moment(event.startTime).subtract(followedCourse.notifyBefore, 'minutes').toISOString(),
+            followedCourse.notifyEmail,
+            config.SUBJECT(
+              course.name,
+              followedCourse.notifyBefore,
+              event.startTime,
+              event.endTime
+            ),
+            config.MESSAGE(
+              course.name,
+              followedCourse.asynchronous,
+              followedCourse.notifyBefore,
+              event.startTime,
+              event.endTime,
+              followedCourse.link,
+              event.location
+            )
+          );
+        }
       }
 
       console.log(`Creating event in gcalendar`);

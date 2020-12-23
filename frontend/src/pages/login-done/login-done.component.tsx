@@ -16,11 +16,9 @@ class LoginDone extends React.Component<any, any>{
     }
     render() {
         return (
-            <Container>
-                <Alert variant='success'>
-                    Login success
-                </Alert>
-            </Container>
+            <Alert variant='success'>
+                Login success
+            </Alert>
         );
     }
     componentDidMount() {

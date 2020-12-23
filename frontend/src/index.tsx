@@ -6,11 +6,16 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {CookiesProvider} from "react-cookie";
+import Header from "./components/header/header.component";
+import {Container} from "react-bootstrap";
 
 ReactDOM.render(
     <CookiesProvider>
         <BrowserRouter>
-            <App />
+            <Header/>
+            <Container>
+                <App />
+            </Container>
         </BrowserRouter>
     </CookiesProvider>,
 

@@ -14,7 +14,7 @@ class DeleteModal extends Component<{ show: any, handleClose: any }> {
                 </Modal.Header>
                 <Modal.Body>Are you sure you want to remove this course from your list?</Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
+                    <Button variant="outline-dark" onClick={handleClose}>
                         Cancel
                     </Button>
                     <Button variant="danger" onClick={handleClose}>

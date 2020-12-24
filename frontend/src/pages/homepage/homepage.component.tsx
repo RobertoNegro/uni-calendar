@@ -2,7 +2,7 @@ import { Button, Col, ListGroup, ListGroupItem, Row } from "react-bootstrap";
 import React, { Component } from "react";
 import DeleteModal from "../../components/delete-modal/delete-modal.component";
 import CustomizeModal from "../../components/customize-modal/customize-modal.component";
-import { PageContainer } from "../../components/page-container/page-container.component";
+import PageContainer from "../../components/page-container/page-container.component";
 
 interface HomePageState {
   currentUser: null | string;
@@ -33,6 +33,8 @@ class HomePage extends Component<any, HomePageState> {
   render() {
     return (
       <PageContainer
+        requireAuth={true}
+        history={this.props.history}
         header={"Università degli Studi di Trento"}
         title={"Your courses"}
       >

@@ -60,14 +60,19 @@ export const refreshUserToken = async (user: number | User) => {
     }
     user = dbUser;
   }
-  if (moment(user.googleExpiringTime) < moment()) {
+
+  if (moment(user.googleExpiringTime).isBefore(moment())) {
     OAuth2Client.setCredentials({
       access_token: user.googleAccessToken,
       refresh_token: user.googleRefreshToken,
     });
+    console.log(`Refreshing user id ${user.id}'s google access token..`);
     const newTokenRes = await OAuth2Client.getAccessToken();
     if (typeof newTokenRes.token === 'string' && newTokenRes.token !== user.googleAccessToken) {
+      console.log(`Google access token updated!`);
       return await userDb.updateAccessToken(user.id, newTokenRes.token);
+    } else {
+      console.log(`Returned google access token is the same as before...`);
     }
   }
 

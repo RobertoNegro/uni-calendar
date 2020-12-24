@@ -3,6 +3,10 @@ import React, { Component } from "react";
 import CustomizeModal from "../../components/customize-modal/customize-modal.component";
 import PageContainer from "../../components/page-container/page-container.component";
 import ConfirmModal from "../../components/confim-modal/confirm-modal.component";
+import { CardContainer } from "../../components/card-container/card-container.component";
+import { RouteComponentProps } from "react-router-dom";
+
+interface HomePageProps extends RouteComponentProps {}
 
 interface HomePageState {
   currentUser: null | string;
@@ -11,8 +15,8 @@ interface HomePageState {
   addCourse: boolean;
 }
 
-class HomePage extends Component<any, HomePageState> {
-  constructor(props: any) {
+class HomePage extends Component<HomePageProps, HomePageState> {
+  constructor(props: HomePageProps) {
     super(props);
     this.state = {
       currentUser: null,
@@ -41,33 +45,33 @@ class HomePage extends Component<any, HomePageState> {
 
   render() {
     return (
-      <PageContainer
-        requireAuth={true}
-        history={this.props.history}
-        header={"Università degli Studi di Trento"}
-        title={"Your courses"}
-        buttonTitle={"Add course"}
-        handleModal={this.onButtonClickModal}
-      >
-        <ListGroup className="list-group-flush">
-          <ListGroupItem>
-            <Row>
-              <Col>Machine Learning</Col>
-              <Col className="text-right">Aula B107</Col>
-              <Col className="text-right">
-                <Button
-                  variant="light mr-1"
-                  onClick={this.handleCustomizeModal}
-                >
-                  <i className="fas fa-cog" />
-                </Button>
-                <Button variant="light" onClick={this.handleDeleteModal}>
-                  <i className="fas fa-trash" />
-                </Button>
-              </Col>
-            </Row>
-          </ListGroupItem>
-        </ListGroup>
+      <PageContainer requireAuth={true} history={this.props.history}>
+        <CardContainer
+          header={"Università degli Studi di Trento"}
+          title={"Your courses"}
+          buttonTitle={"Add course"}
+          handleModal={this.onButtonClickModal}
+        >
+          <ListGroup className="list-group-flush">
+            <ListGroupItem>
+              <Row>
+                <Col>Machine Learning</Col>
+                <Col className="text-right">Aula B107</Col>
+                <Col className="text-right">
+                  <Button
+                    variant="light mr-1"
+                    onClick={this.handleCustomizeModal}
+                  >
+                    <i className="fas fa-cog" />
+                  </Button>
+                  <Button variant="light" onClick={this.handleDeleteModal}>
+                    <i className="fas fa-trash" />
+                  </Button>
+                </Col>
+              </Row>
+            </ListGroupItem>
+          </ListGroup>
+        </CardContainer>
         <ConfirmModal
           show={this.state.showHideDeleteModal}
           handleClose={this.handleDeleteModal}

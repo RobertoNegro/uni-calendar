@@ -1,32 +1,36 @@
 import React from "react";
 import { instanceOf } from "prop-types";
-import { Alert } from "react-bootstrap";
 import { Cookies, withCookies } from "react-cookie";
 import queryString from "query-string";
 import moment from "moment";
+import Loader from "../../components/loader/loader.component";
+import { ReactCookieProps } from "react-cookie/cjs/types";
+import { RouteComponentProps } from "react-router-dom";
 
-class LoginDone extends React.Component<any, any> {
+interface LoginDoneProps extends ReactCookieProps, RouteComponentProps {}
+interface LoginDoneState {
+  redirect: string;
+}
+
+class LoginDone extends React.Component<LoginDoneProps, LoginDoneState> {
   static propTypes = {
     cookies: instanceOf(Cookies).isRequired,
   };
 
-  constructor(props: any) {
+  constructor(props: LoginDoneProps) {
     super(props);
     this.state = {
       redirect: "/homepage",
     };
   }
 
-  render() {
-    return <Alert variant="success">Login success</Alert>;
-  }
   componentDidMount() {
     this.handleSessionCookie();
     this.props.history.replace(this.state.redirect);
   }
 
   handleSessionCookie() {
-    const { cookies } = this.props;
+    const { cookies, history } = this.props;
     const params = queryString.parse(this.props.location.search);
     let sessionToken = params.token;
     let exp: number | string[] | string | null = params.exp;
@@ -46,13 +50,19 @@ class LoginDone extends React.Component<any, any> {
       }
     }
 
-    if (sessionToken) {
+    if (cookies && sessionToken) {
       cookies.set("sessionToken", sessionToken, {
         path: "/",
         expires:
           typeof exp === "number" ? moment(exp * 1000).toDate() : undefined,
       });
+    } else {
+      history.replace("/");
     }
+  }
+
+  render() {
+    return <Loader show={true} />;
   }
 }
 export default withCookies(LoginDone);

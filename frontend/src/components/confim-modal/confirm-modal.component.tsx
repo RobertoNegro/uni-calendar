@@ -5,7 +5,7 @@ interface ConfirmModalProps {
     show: boolean,
     handleClose: any,
     title: string,
-    text: string
+    text?: string
 }
 
 class ConfirmModal extends Component<ConfirmModalProps, any> {
@@ -18,7 +18,10 @@ class ConfirmModal extends Component<ConfirmModalProps, any> {
                 <Modal.Header closeButton>
                     <Modal.Title>{this.props.title}</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>{this.props.text}</Modal.Body>
+                <Modal.Body>
+                    {this.props.text}
+                    {this.props.children}
+                </Modal.Body>
                 <Modal.Footer>
                     <Button variant="outline-dark" onClick={this.props.handleClose}>
                         Cancel

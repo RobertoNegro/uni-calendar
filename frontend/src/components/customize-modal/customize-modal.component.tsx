@@ -1,10 +1,12 @@
 import { Button, Modal, Form } from "react-bootstrap";
-import { ChangeEvent, Component, FormEvent } from "react";
+import React, { ChangeEvent, Component } from "react";
 import "./customize-modal.styles.css";
+import {SearchBar} from "../search-bar/search-bar.component";
 
 interface CustomizeModalProps {
   show: boolean;
   handleClose: () => void;
+  addCourse: boolean;
 }
 
 interface CustomizeModalState {
@@ -12,6 +14,7 @@ interface CustomizeModalState {
   description: string;
   colorId: string;
   zoomUrl: string;
+  courseId: string;
 }
 
 const eventColorsHash: {
@@ -74,6 +77,7 @@ class CustomizeModal extends Component<
       description: "",
       colorId: "1",
       zoomUrl: "",
+      courseId: ""
     };
   }
 
@@ -88,6 +92,8 @@ class CustomizeModal extends Component<
       this.setState({ [name]: value });
     } else if (name === "zoomUrl") {
       this.setState({ [name]: value });
+    }else if (name === "courseId") {
+      this.setState({ [name]: value });
     }
   };
 
@@ -97,7 +103,7 @@ class CustomizeModal extends Component<
   };
 
   render() {
-    let { show, handleClose } = this.props;
+    let { show, handleClose, addCourse } = this.props;
     return (
       <Modal
         size="lg"
@@ -113,6 +119,7 @@ class CustomizeModal extends Component<
         <Form onSubmit={this.handleSubmit}>
           <Modal.Body>
             <div>
+              {addCourse && <SearchBar label={'Search course'} name={'courseId'} value={this.state.courseId} onChange={this.handleChange} /> }
               <Form.Group>
                 <Form.Label>Select how you'll follow the course</Form.Label>
                 <Form.Check

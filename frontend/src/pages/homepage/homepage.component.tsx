@@ -8,6 +8,7 @@ interface HomePageState {
   currentUser: null | string;
   showHideDeleteModal: boolean;
   showHideCustomizeModal: boolean;
+  addCourse: boolean;
 }
 
 class HomePage extends Component<any, HomePageState> {
@@ -17,6 +18,7 @@ class HomePage extends Component<any, HomePageState> {
       currentUser: null,
       showHideDeleteModal: false,
       showHideCustomizeModal: false,
+      addCourse: false,
     };
   }
 
@@ -27,6 +29,13 @@ class HomePage extends Component<any, HomePageState> {
   handleCustomizeModal = () => {
     this.setState({
       showHideCustomizeModal: !this.state.showHideCustomizeModal,
+      addCourse: false
+    });
+  };
+  onButtonClickModal = () => {
+    this.setState({
+      showHideCustomizeModal: !this.state.showHideCustomizeModal,
+      addCourse: true
     });
   };
 
@@ -35,12 +44,14 @@ class HomePage extends Component<any, HomePageState> {
       <PageContainer
         header={"Università degli Studi di Trento"}
         title={"Your courses"}
+        buttonTitle={"Add course"}
+        handleModal={this.onButtonClickModal}
       >
         <ListGroup className="list-group-flush">
           <ListGroupItem>
             <Row>
               <Col>Machine Learning</Col>
-              <Col className="text-right">1 year</Col>
+              <Col className="text-right">Aula B107</Col>
               <Col className="text-right">
                 <Button
                   variant="light mr-1"
@@ -62,6 +73,7 @@ class HomePage extends Component<any, HomePageState> {
         <CustomizeModal
           show={this.state.showHideCustomizeModal}
           handleClose={this.handleCustomizeModal}
+          addCourse={this.state.addCourse}
         />
       </PageContainer>
     );

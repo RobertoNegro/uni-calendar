@@ -7,7 +7,7 @@ export const PageContainer = (props: any) => (
   <div>
     {!props.hideHeader && <Header />}
     <Container>
-      <CardContainer header={props.header} title={props.title}>
+      <CardContainer header={props.header} title={props.title} buttonTitle={props.buttonTitle} handleModal={props.handleModal} >
         {props.children}
       </CardContainer>
     </Container>

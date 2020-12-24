@@ -1,7 +1,7 @@
 import { Button, Col, ListGroup, ListGroupItem, Row } from "react-bootstrap";
 import React, { Component } from "react";
 import CustomizeModal from "../../components/customize-modal/customize-modal.component";
-import { PageContainer } from "../../components/page-container/page-container.component";
+import PageContainer from "../../components/page-container/page-container.component";
 import ConfirmModal from "../../components/confim-modal/confirm-modal.component";
 
 interface HomePageState {
@@ -29,19 +29,21 @@ class HomePage extends Component<any, HomePageState> {
   handleCustomizeModal = () => {
     this.setState({
       showHideCustomizeModal: !this.state.showHideCustomizeModal,
-      addCourse: false
+      addCourse: false,
     });
   };
   onButtonClickModal = () => {
     this.setState({
       showHideCustomizeModal: !this.state.showHideCustomizeModal,
-      addCourse: true
+      addCourse: true,
     });
   };
 
   render() {
     return (
       <PageContainer
+        requireAuth={true}
+        history={this.props.history}
         header={"Università degli Studi di Trento"}
         title={"Your courses"}
         buttonTitle={"Add course"}
@@ -69,8 +71,8 @@ class HomePage extends Component<any, HomePageState> {
         <ConfirmModal
           show={this.state.showHideDeleteModal}
           handleClose={this.handleDeleteModal}
-          title={'Delete course from list'}
-          text={'Are you sure you want to remove this course from your list?'}
+          title={"Delete course from list"}
+          text={"Are you sure you want to remove this course from your list?"}
         />
         <CustomizeModal
           show={this.state.showHideCustomizeModal}

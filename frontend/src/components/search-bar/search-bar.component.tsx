@@ -1,35 +1,28 @@
-import React, {Component} from "react";
+import React from "react";
+import { Typeahead } from 'react-bootstrap-typeahead';
 import { Form} from "react-bootstrap";
 
-interface SearchBarState {
-    courses:null
-}
 interface SearchBarProps {
-    label: string
-    name: string
-    value: string
-    onChange: React.ChangeEventHandler<HTMLInputElement>;
+    label: string,
+    data: {id: number, name: string}[],
+    handleChange:(selected: {id: number, name: string}[]) => void,
 }
 
-export class SearchBar extends Component<SearchBarProps, SearchBarState> {
-    constructor(props: any) {
-        super(props);
-        this.state = {
-            courses: null,
-        }
-    }
+export class SearchBar extends React.Component<SearchBarProps, any> {
     render() {
         return (
-            // <Form.Group controlId="exampleForm.SelectCustom">
-            //     <Form.Label>Custom select</Form.Label>
-            //     <Form.Control as="select" name={this.props.name} onChange={this.props.onChange} custom>
-            //         <option value={this.props.value}>1</option>
-            //     </Form.Control>
-            // </Form.Group>
-            <Form.Group controlId="search-course">
-                <Form.Label>{this.props.label}</Form.Label>
-                <Form.Control type="text" name={this.props.name} value={this.props.value} placeholder={this.props.label} onChange={this.props.onChange}/>
-            </Form.Group>
+            <div>
+                <Form.Group>
+                    <Form.Label>{this.props.label}</Form.Label>
+                    <Typeahead
+                        id="basic-typeahead-single"
+                        labelKey="name"
+                        onChange={this.props.handleChange}
+                        options={this.props.data}
+                        placeholder={this.props.label}
+                    />
+                </Form.Group>
+            </div>
         );
     }
 }

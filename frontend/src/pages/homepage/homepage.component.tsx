@@ -1,8 +1,8 @@
 import { Button, Col, ListGroup, ListGroupItem, Row } from "react-bootstrap";
 import React, { Component } from "react";
-import DeleteModal from "../../components/delete-modal/delete-modal.component";
 import CustomizeModal from "../../components/customize-modal/customize-modal.component";
 import { PageContainer } from "../../components/page-container/page-container.component";
+import ConfirmModal from "../../components/confim-modal/confirm-modal.component";
 
 interface HomePageState {
   currentUser: null | string;
@@ -66,9 +66,11 @@ class HomePage extends Component<any, HomePageState> {
             </Row>
           </ListGroupItem>
         </ListGroup>
-        <DeleteModal
+        <ConfirmModal
           show={this.state.showHideDeleteModal}
           handleClose={this.handleDeleteModal}
+          title={'Delete course from list'}
+          text={'Are you sure you want to remove this course from your list?'}
         />
         <CustomizeModal
           show={this.state.showHideCustomizeModal}

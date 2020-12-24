@@ -14,7 +14,7 @@ interface CustomizeModalState {
   description: string;
   colorId: string;
   zoomUrl: string;
-  courseId: string;
+  course: { id: number, name: string } | undefined;
 }
 
 const eventColorsHash: {
@@ -66,6 +66,14 @@ const eventColorsHash: {
   },
 };
 
+const courses = [{
+  id: 0,
+  name: "Machine Learning"
+}, {
+  id: 1,
+  name: "Service design"
+}]
+
 class CustomizeModal extends Component<
   CustomizeModalProps,
   CustomizeModalState
@@ -77,7 +85,7 @@ class CustomizeModal extends Component<
       description: "",
       colorId: "1",
       zoomUrl: "",
-      courseId: ""
+      course: undefined
     };
   }
 
@@ -92,10 +100,16 @@ class CustomizeModal extends Component<
       this.setState({ [name]: value });
     } else if (name === "zoomUrl") {
       this.setState({ [name]: value });
-    }else if (name === "courseId") {
-      this.setState({ [name]: value });
     }
   };
+  handleChangeSearchBar = (selected: {id: number, name: string}[]) => {
+    if(selected.length >= 1) {
+      this.setState({course: selected[0]})
+    } else {
+      this.setState({course: undefined})
+    }
+
+  }
 
   handleSubmit = async (event: { preventDefault: () => void }) => {
     console.log(this.state);
@@ -119,7 +133,11 @@ class CustomizeModal extends Component<
         <Form onSubmit={this.handleSubmit}>
           <Modal.Body>
             <div>
-              {addCourse && <SearchBar label={'Search course'} name={'courseId'} value={this.state.courseId} onChange={this.handleChange} /> }
+              {addCourse &&
+                <SearchBar
+                    label={'Search course'}
+                    data={courses}
+                    handleChange={this.handleChangeSearchBar}/> }
               <Form.Group>
                 <Form.Label>Select how you'll follow the course</Form.Label>
                 <Form.Check

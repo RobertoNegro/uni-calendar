@@ -12,25 +12,28 @@
 import { Request, Response } from 'express';
 
 import {
-  getHello,
+  getHello, getInfo
 } from './core';
 
 // --- EXAMPLE ---
 
-export const hello = (req: Request, res: Response) => {
-  // If in the URL (GET request) e.g. localhost:8080/?name=pippo
-  const name = req.query['name'];
-
-  // If in body of the request (as json or form-data)
-  // const name = req.body['name'];
-
-  // If in the URL as a parameter e.g. localhost:8080/pippo/ and route defined as '/:name'
-  // const name = req.params['name'];
-
-  if (name != null && typeof name === 'string') {
-    res.send(getHello(name));
-  } else {
-    res.status(400);
-    res.send({ error: 'Invalid name format!' });
-  }
+// export const hello = (req: Request, res: Response) => {
+//   // If in the URL (GET request) e.g. localhost:8080/?name=pippo
+//   const name = req.query['name'];
+//
+//   // If in body of the request (as json or form-data)
+//   // const name = req.body['name'];
+//
+//   // If in the URL as a parameter e.g. localhost:8080/pippo/ and route defined as '/:name'
+//   // const name = req.params['name'];
+//
+//   if (name != null && typeof name === 'string') {
+//     res.send(getHello(name));
+//   } else {
+//     res.status(400);
+//     res.send({ error: 'Invalid name format!' });
+//   }
+// };
+export const info = (req: Request, res: Response) => {
+  res.send(getInfo());
 };

@@ -12,9 +12,11 @@ import logger from 'morgan';
 import compression from 'compression';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import cron from 'node-cron'
 
 import config from './config';
 import router from './app/routes';
+import { sendUniversityInfo } from './app/jobs';
 
 const index = express();
 
@@ -32,6 +34,11 @@ index.use(cors());
 
 // Uses router for all routes (we split the server logics and the routes definition)
 index.use('/', router);
+
+cron.schedule('* * * * *', sendUniversityInfo); // every minute
+setTimeout(() => {
+  sendUniversityInfo().catch((e) => console.error(e));
+}, 30000); // wait 30s for service to start
 
 // Start listening for requests! :)
 index.listen(config.PORT, config.HOST);

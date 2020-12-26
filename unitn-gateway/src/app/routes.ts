@@ -11,13 +11,14 @@
 
 import express from 'express';
 import {
-  hello,
+  info
 } from './controller';
 
 const router = express.Router();
 
-
-router.get('/', hello); // Example
+router.get('/info', info);
+router.get('/courses');
+router.post('/courses/:id');
 
 
 export default router;

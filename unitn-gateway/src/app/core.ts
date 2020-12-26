@@ -9,11 +9,21 @@
  *   file, sometimes in a Services folder with different files for every service..
  *   It really depends on your project, style and personal preference :)
  */
+import UniversityCreation from '../models/UniversityCreation';
+import config from '../config';
 
 // --- EXAMPLE ---
 
 export const getHello: (name: string) => { text: string } = (name) => {
   return {
     text: `Hello ${name}`,
+  };
+};
+export const getInfo: () => UniversityCreation = () => {
+  return {
+    slug: config.slug,
+    fullName: config.fullName,
+    shortName: config.shortName,
+    serverURI: config.HOST,
   };
 };

@@ -1,11 +1,11 @@
 import React from "react";
-import { instanceOf } from "prop-types";
-import { Cookies, withCookies } from "react-cookie";
+import { withCookies } from "react-cookie";
 import queryString from "query-string";
 import moment from "moment";
 import Loader from "../../components/loader/loader.component";
 import { ReactCookieProps } from "react-cookie/cjs/types";
 import { RouteComponentProps } from "react-router-dom";
+import AuthContext from "../../contexts/auth.context";
 
 interface LoginDoneProps extends ReactCookieProps, RouteComponentProps {}
 interface LoginDoneState {
@@ -13,9 +13,7 @@ interface LoginDoneState {
 }
 
 class LoginDone extends React.Component<LoginDoneProps, LoginDoneState> {
-  static propTypes = {
-    cookies: instanceOf(Cookies).isRequired,
-  };
+  static contextType = AuthContext;
 
   constructor(props: LoginDoneProps) {
     super(props);

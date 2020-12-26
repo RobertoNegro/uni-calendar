@@ -3,7 +3,6 @@ import { Button, Card } from "react-bootstrap";
 import "./sign-in.styles.css";
 import React from "react";
 import PageContainer from "../../components/page-container/page-container.component";
-import { ReactCookieProps } from "react-cookie/cjs/types";
 import { RouteComponentProps } from "react-router-dom";
 
 interface SignInProps extends RouteComponentProps {}

@@ -6,48 +6,182 @@ import { SearchBar } from "../../components/search-bar/search-bar.component";
 import PageContainer from "../../components/page-container/page-container.component";
 import { withCookies, ReactCookieProps } from "react-cookie";
 import { RouteComponentProps } from "react-router-dom";
+import AuthContext from "../../contexts/auth.context";
+import axios from "axios";
+import config from "../../config";
+import University from "../../models/University";
+import { CountdownCircleTimer } from "react-countdown-circle-timer";
+import moment from "moment";
+import queryString from "query-string";
 
 interface UserProfileProps extends ReactCookieProps, RouteComponentProps {}
 
 interface UserProfileState {
-  currentUser: null;
   showConfirmModal: boolean;
   showSelectUniversityModal: boolean;
-  university: { id: number; name: string } | undefined;
+  university: University | undefined;
+  universities: University[];
+  loadingUniversities: boolean;
 }
 
-const universities = [
-  {
-    id: 0,
-    name: "University of Trento",
-  },
-  {
-    id: 1,
-    name: "University of Bolzano",
-  },
-];
-
 class UserProfile extends React.Component<UserProfileProps, UserProfileState> {
+  static contextType = AuthContext;
+
   constructor(props: UserProfileProps) {
     super(props);
+
     this.state = {
-      currentUser: null,
       showConfirmModal: false,
-      showSelectUniversityModal: false,
+      showSelectUniversityModal: !!queryString.parse(this.props.location.search)
+        .uni,
       university: undefined,
+      universities: [],
+      loadingUniversities: false,
     };
   }
+
+  async refreshUniversitiesList() {
+    this.setState({ universities: [], loadingUniversities: true });
+    let res = null;
+    try {
+      res = await axios.get<University[]>(config.API_URL + "/uni/universities");
+    } catch (e) {
+      console.error("Error while fetching universities list:", e);
+    }
+    if (res && res.data) {
+      this.setState({
+        universities: res.data,
+        loadingUniversities: false,
+      });
+    } else {
+      this.setState({ loadingUniversities: false });
+    }
+  }
+
+  componentDidMount() {
+    this.refreshUniversitiesList().catch((e) =>
+      console.error("Error while fetching universities list:", e)
+    );
+  }
+
   handleTelegramModal = () => {
     this.setState({ showConfirmModal: !this.state.showConfirmModal });
   };
 
-  handleUniversityModal = () => {
-    this.setState({
-      showSelectUniversityModal: !this.state.showSelectUniversityModal,
-    });
+  handleUniversityModal = (confirmed: boolean) => {
+    const hasToSet = !!queryString.parse(this.props.location.search).uni;
+    if (!hasToSet || (confirmed && this.state.university)) {
+      this.setState({
+        showSelectUniversityModal: !this.state.showSelectUniversityModal,
+      });
+
+      if (confirmed && this.state.university) {
+        const { user } = this.context;
+        if (
+          !user ||
+          !user.university ||
+          this.state.university.slug !== user.university.slug
+        ) {
+          const { cookies } = this.props;
+          if (cookies) {
+            const sessionToken = cookies.get("sessionToken");
+            if (sessionToken) {
+              axios
+                .post(
+                  config.API_URL + "/user/settings",
+                  {
+                    universitySlug: this.state.university.slug,
+                  },
+                  {
+                    headers: {
+                      Authorization: "Bearer " + sessionToken,
+                    },
+                  }
+                )
+                .then(() => {
+                  if (hasToSet) {
+                    this.props.history.replace("/");
+                  } else {
+                    this.props.history.push("/redirect");
+                    this.props.history.goBack();
+                  }
+                })
+                .catch((e) => {
+                  console.error("Error while updating user settings:", e);
+                });
+            }
+          }
+        }
+      }
+    }
   };
 
-  handleChangeSearchBar = (selected: { id: number; name: string }[]) => {
+  generateTelegramCode = async () => {
+    const { cookies } = this.props;
+    if (cookies) {
+      const sessionToken = cookies.get("sessionToken");
+      if (sessionToken) {
+        try {
+          const res = await axios.get(config.API_URL + "/telegram", {
+            headers: {
+              Authorization: "Bearer " + sessionToken,
+            },
+          });
+          if (res.data) {
+            return (
+              <div
+                className={
+                  "text-center d-flex align-items-center justify-content-center flex-column"
+                }
+              >
+                In order to associate your Telegram account with your
+                UniCalendar account, please send a message to our UniCalendar
+                bot with this command:{" "}
+                <pre className={"mt-2"}>\start {res.data.secret}</pre>
+                <CountdownCircleTimer
+                  isPlaying
+                  initialRemainingTime={moment(res.data.expires).diff(
+                    moment(),
+                    "seconds"
+                  )}
+                  duration={120}
+                  colors={[
+                    ["#004777", 0.33],
+                    ["#F7B801", 0.33],
+                    ["#A30000", 0],
+                  ]}
+                >
+                  {({ remainingTime }) => {
+                    return remainingTime ? (
+                      <div
+                        className={
+                          "text-center d-flex align-items-center justify-content-center flex-column"
+                        }
+                      >
+                        <div>You can do it in</div>
+                        <div className={"h1 mb-0"}>{remainingTime}</div>
+                        <div>seconds</div>
+                      </div>
+                    ) : (
+                      <div className={"h1 mb-0"}>Expired!</div>
+                    );
+                  }}
+                </CountdownCircleTimer>
+              </div>
+            );
+          }
+        } catch (e) {
+          console.error(
+            "Something went wrong while your obtaining telegram token: ",
+            e
+          );
+        }
+      }
+    }
+    return "Something went wrong while obtaining your telegram token. Please, try again.";
+  };
+
+  handleChangeSearchBar = (selected: University[]) => {
     if (selected.length >= 1) {
       this.setState({ university: selected[0] });
     } else {
@@ -56,8 +190,10 @@ class UserProfile extends React.Component<UserProfileProps, UserProfileState> {
   };
 
   handleLogout = () => {
+    const { setUser } = this.context;
     const { cookies, history } = this.props;
     if (cookies) {
+      setUser(null);
       cookies.remove("sessionToken");
       history.replace("/");
     }
@@ -66,61 +202,85 @@ class UserProfile extends React.Component<UserProfileProps, UserProfileState> {
   render() {
     return (
       <PageContainer requireAuth={true} history={this.props.history}>
-        <Card className="mt-3">
-          <Image
-            src="./unicalendar.svg"
-            style={{ width: "150px", height: "150px" }}
-            className="mx-auto mt-4"
-            roundedCircle
-          />
-          <Card.Body>
-            <Card.Title className="text-center">Hi, Giulia Peserico</Card.Title>
-            <Card.Text className="text-center">
-              You can handle your information here.
-            </Card.Text>
-            <ListGroup variant="flush">
-              <ListGroup.Item>Giulia Peserico</ListGroup.Item>
-              <ListGroup.Item>giu.peserico@gmail.com</ListGroup.Item>
-              <ListGroup.Item className="d-flex justify-content-between">
-                <span>Università degli studi di Trento</span>
-                <Button
-                  variant="secondary"
-                  onClick={this.handleUniversityModal}
+        <AuthContext.Consumer>
+          {({ user }) =>
+            user ? (
+              <>
+                <Card className="mt-3">
+                  <Image
+                    src={user.picture}
+                    style={{ width: "150px", height: "150px" }}
+                    className="mx-auto mt-4"
+                    roundedCircle
+                  />
+                  <Card.Body>
+                    <Card.Title className="text-center">
+                      Hi, {`${user.firstName} ${user.lastName}`}
+                    </Card.Title>
+                    <Card.Text className="text-center">
+                      You can handle your information here.
+                    </Card.Text>
+                    <ListGroup variant="flush">
+                      <ListGroup.Item>{`${user.firstName} ${user.lastName}`}</ListGroup.Item>
+                      <ListGroup.Item>{user.email}</ListGroup.Item>
+                      <ListGroup.Item className="d-flex justify-content-between align-items-center">
+                        <span className={!user.university ? "font-italic" : ""}>
+                          {user.university
+                            ? user.university.fullName
+                            : "There is no university set yet."}
+                        </span>
+                        <Button
+                          variant="secondary"
+                          disabled={this.state.loadingUniversities}
+                          onClick={() => this.handleUniversityModal(false)}
+                        >
+                          Edit
+                        </Button>
+                      </ListGroup.Item>
+                      <ListGroup.Item className="d-flex justify-content-between  align-items-center">
+                        <span>Add telegram connection</span>
+                        <Button
+                          variant="secondary"
+                          onClick={this.handleTelegramModal}
+                        >
+                          Obtain code
+                        </Button>
+                      </ListGroup.Item>
+                      <ListGroup.Item className="d-flex justify-content-center">
+                        <Button variant="danger" onClick={this.handleLogout}>
+                          Logout
+                        </Button>
+                      </ListGroup.Item>
+                    </ListGroup>
+                  </Card.Body>
+                </Card>
+                <ConfirmModal
+                  show={this.state.showSelectUniversityModal}
+                  handleClose={this.handleUniversityModal}
+                  title={"Choose university"}
+                  notCancellable={
+                    !!queryString.parse(this.props.location.search).uni
+                  }
                 >
-                  Edit
-                </Button>
-              </ListGroup.Item>
-              <ListGroup.Item className="d-flex justify-content-between">
-                <span>Telegram connection</span>
-                <Button variant="secondary" onClick={this.handleTelegramModal}>
-                  Send code
-                </Button>
-              </ListGroup.Item>
-              <ListGroup.Item className="d-flex justify-content-center">
-                <Button variant="danger" onClick={this.handleLogout}>
-                  Logout
-                </Button>
-              </ListGroup.Item>
-            </ListGroup>
-          </Card.Body>
-        </Card>
-        <ConfirmModal
-          show={this.state.showSelectUniversityModal}
-          handleClose={this.handleUniversityModal}
-          title={"Choose university"}
-        >
-          <SearchBar
-            label={"Select university"}
-            data={universities}
-            handleChange={this.handleUniversityModal}
-          />
-        </ConfirmModal>
-        <ConfirmModal
-          show={this.state.showConfirmModal}
-          handleClose={this.handleTelegramModal}
-          title={"Connection with telegram"}
-          text={"Your code to connect you account with Telegram is: "}
-        />
+                  <SearchBar
+                    label={"Select a university from the list"}
+                    data={this.state.universities}
+                    defaultSelected={user.university}
+                    labelKey={"fullName"}
+                    handleChange={this.handleChangeSearchBar}
+                  />
+                </ConfirmModal>
+                <ConfirmModal
+                  show={this.state.showConfirmModal}
+                  handleClose={this.handleTelegramModal}
+                  title={"Connection with telegram"}
+                  text={this.generateTelegramCode}
+                  notCancellable={true}
+                />
+              </>
+            ) : null
+          }
+        </AuthContext.Consumer>
       </PageContainer>
     );
   }

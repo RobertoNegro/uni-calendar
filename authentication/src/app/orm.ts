@@ -1,6 +1,7 @@
 import pgPromise from 'pg-promise';
 import config from '../config';
-import User from '../models/User';
+import { UserDbEntry } from './models';
+import { dbEntryToModel } from './helper';
 
 export class UserDb {
   db = pgPromise({})(config.DB);
@@ -22,46 +23,63 @@ export class UserDb {
       if (!googleRefreshToken) {
         throw new Error("No refresh token provided! It's required for new users!");
       } else {
-        return await this.db.one(
-          'INSERT INTO "User"("googleAccessToken", "googleExpiringTime", "googleRefreshToken", "firstName", "lastName", email, picture) VALUES($1, now() + interval \'50 minutes\', $2, $3, $4, $5, $6) RETURNING *',
+        const res = await this.db.one<{ id: number }>(
+          'INSERT INTO "User"("googleAccessToken", "googleExpiringTime", "googleRefreshToken", "firstName", "lastName", email, picture) VALUES($1, now() + interval \'50 minutes\', $2, $3, $4, $5, $6) RETURNING id',
           [googleAccessToken, googleRefreshToken, firstName, lastName, email, picture]
         );
+        return await this.getUserById(res.id);
       }
     } else {
       if (googleRefreshToken) {
-        return await this.db.one(
-          'UPDATE "User" SET ("googleAccessToken", "googleExpiringTime", "googleRefreshToken", "firstName", "lastName", email, picture) = ($1, now() + interval \'50 minutes\', $2, $3, $4, $5, $6) WHERE id = $7 RETURNING *',
+        const res = await this.db.one<{ id: number }>(
+          'UPDATE "User" SET ("googleAccessToken", "googleExpiringTime", "googleRefreshToken", "firstName", "lastName", email, picture) = ($1, now() + interval \'50 minutes\', $2, $3, $4, $5, $6) WHERE id = $7 RETURNING id',
           [googleAccessToken, googleRefreshToken, firstName, lastName, email, picture, user.id]
         );
+        return await this.getUserById(res.id);
       } else {
-        return await this.db.one(
-          'UPDATE "User" SET ("googleAccessToken", "googleExpiringTime", "firstName", "lastName", email, picture) = ($1, now() + interval \'50 minutes\', $2, $3, $4, $5) WHERE id = $6 RETURNING *',
+        const res = await this.db.one<{ id: number }>(
+          'UPDATE "User" SET ("googleAccessToken", "googleExpiringTime", "firstName", "lastName", email, picture) = ($1, now() + interval \'50 minutes\', $2, $3, $4, $5) WHERE id = $6 RETURNING id',
           [googleAccessToken, firstName, lastName, email, picture, user.id]
         );
+        return await this.getUserById(res.id);
       }
     }
   }
 
   async updateAccessToken(id: number, googleAccessToken: string) {
-    return await this.db.one<User>(
-      'UPDATE "User" SET ("googleAccessToken", "googleExpiringTime") = ($1, now() + interval \'50 minutes\') WHERE id = $2 RETURNING *',
+    await this.db.none(
+      'UPDATE "User" SET ("googleAccessToken", "googleExpiringTime") = ($1, now() + interval \'50 minutes\') WHERE id = $2',
       [googleAccessToken, id]
     );
+    return await this.getUserById(id);
   }
 
   async getUserByEmail(email: string) {
-    return await this.db.oneOrNone<User>('SELECT * FROM "User" WHERE email = $1', [email]);
+    const res = await this.db.oneOrNone<UserDbEntry>(
+      'SELECT "User".*, "University"."fullName" AS "universityFullName", "University"."shortName" AS "universityShortName", "University"."serverURI" AS "universityServerURI", "University"."lastActivity" AS "universityLastActivity" FROM "User" LEFT JOIN "University" ON "User"."universitySlug" = "University"."slug" ' +
+        'WHERE email = $1',
+      [email]
+    );
+
+    return res ? dbEntryToModel(res) : null;
   }
 
   async getUserById(id: number) {
-    return await this.db.oneOrNone<User>('SELECT * FROM "User" WHERE id = $1', [id]);
+    const res = await this.db.oneOrNone<UserDbEntry>(
+      'SELECT "User".*, "University"."fullName" AS "universityFullName", "University"."shortName" AS "universityShortName", "University"."serverURI" AS "universityServerURI", "University"."lastActivity" AS "universityLastActivity" FROM "User" LEFT JOIN "University" ON "User"."universitySlug" = "University"."slug" ' +
+        'WHERE id = $1',
+      [id]
+    );
+    return res ? dbEntryToModel(res) : null;
   }
 
   async getUserByEmailAndAccessToken(email: string, googleAccessToken: string) {
-    return await this.db.oneOrNone<User>(
-      'SELECT * FROM "User" WHERE email = $1 AND "googleAccessToken" = $2',
+    const res = await this.db.oneOrNone<UserDbEntry>(
+      'SELECT "User".*, "University"."fullName" AS "universityFullName", "University"."shortName" AS "universityShortName", "University"."serverURI" AS "universityServerURI", "University"."lastActivity" AS "universityLastActivity" FROM "User" LEFT JOIN "University" ON "User"."universitySlug" = "University"."slug" ' +
+        'WHERE email = $1 AND "googleAccessToken" = $2',
       [email, googleAccessToken]
     );
+    return res ? dbEntryToModel(res) : null;
   }
 }
 

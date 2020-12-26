@@ -3,8 +3,8 @@ import { OAuth2Client } from '../strategies/google-strategy';
 import { isSessionToken, SessionToken } from './models';
 import jwt from 'jsonwebtoken';
 import secrets from '../secrets';
-import User from '../models/User';
 import moment from 'moment';
+import User from '../models/User';
 
 /*********
  * Core functionalities

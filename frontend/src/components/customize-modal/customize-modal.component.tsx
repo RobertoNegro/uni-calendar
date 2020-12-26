@@ -1,7 +1,7 @@
 import { Button, Modal, Form } from "react-bootstrap";
 import React, { ChangeEvent, Component } from "react";
 import "./customize-modal.styles.css";
-import {SearchBar} from "../search-bar/search-bar.component";
+import { SearchBar } from "../search-bar/search-bar.component";
 
 interface CustomizeModalProps {
   show: boolean;
@@ -14,7 +14,7 @@ interface CustomizeModalState {
   description: string;
   colorId: string;
   zoomUrl: string;
-  course: { id: number, name: string } | undefined;
+  course: { id: number; name: string } | undefined;
 }
 
 const eventColorsHash: {
@@ -66,13 +66,16 @@ const eventColorsHash: {
   },
 };
 
-const courses = [{
-  id: 0,
-  name: "Machine Learning"
-}, {
-  id: 1,
-  name: "Service design"
-}]
+const courses = [
+  {
+    id: 0,
+    name: "Machine Learning",
+  },
+  {
+    id: 1,
+    name: "Service design",
+  },
+];
 
 class CustomizeModal extends Component<
   CustomizeModalProps,
@@ -85,7 +88,7 @@ class CustomizeModal extends Component<
       description: "",
       colorId: "1",
       zoomUrl: "",
-      course: undefined
+      course: undefined,
     };
   }
 
@@ -102,14 +105,13 @@ class CustomizeModal extends Component<
       this.setState({ [name]: value });
     }
   };
-  handleChangeSearchBar = (selected: {id: number, name: string}[]) => {
-    if(selected.length >= 1) {
-      this.setState({course: selected[0]})
+  handleChangeSearchBar = (selected: { id: number; name: string }[]) => {
+    if (selected.length >= 1) {
+      this.setState({ course: selected[0] });
     } else {
-      this.setState({course: undefined})
+      this.setState({ course: undefined });
     }
-
-  }
+  };
 
   handleSubmit = async (event: { preventDefault: () => void }) => {
     console.log(this.state);
@@ -133,11 +135,14 @@ class CustomizeModal extends Component<
         <Form onSubmit={this.handleSubmit}>
           <Modal.Body>
             <div>
-              {addCourse &&
+              {addCourse && (
                 <SearchBar
-                    label={'Search course'}
-                    data={courses}
-                    handleChange={this.handleChangeSearchBar}/> }
+                  label={"Search course"}
+                  data={courses}
+                  labelKey={"name"}
+                  handleChange={this.handleChangeSearchBar}
+                />
+              )}
               <Form.Group>
                 <Form.Label>Select how you'll follow the course</Form.Label>
                 <Form.Check

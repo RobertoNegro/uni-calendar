@@ -20,6 +20,7 @@
     "react-bootstrap": "^1.4.0",
     "react-bootstrap-typeahead": "^5.1.4",
     "react-cookie": "^4.0.3",
+    "react-countdown-circle-timer": "^2.3.7",
     "react-dom": "^17.0.1",
     "react-loader-spinner": "^3.1.14",
     "react-router-dom": "^5.2.0",

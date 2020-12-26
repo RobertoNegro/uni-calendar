@@ -7,6 +7,8 @@ import User from "../../models/User";
 import Loader from "../loader/loader.component";
 import { checkSessionCookie } from "../../helpers";
 import { History } from "history";
+import AuthContext from "../../contexts/auth.context";
+import { Redirect } from "react-router-dom";
 
 interface PageContainerProps extends ReactCookieProps {
   hideHeader?: boolean;
@@ -16,50 +18,62 @@ interface PageContainerProps extends ReactCookieProps {
 
 interface PageContainerState {
   authChecked: boolean;
-  user: undefined | User;
 }
 
 class PageContainer extends Component<PageContainerProps, PageContainerState> {
+  static contextType = AuthContext;
+
   constructor(props: PageContainerProps) {
     super(props);
     this.state = {
       authChecked: !props.requireAuth,
-      user: undefined,
     };
   }
 
   componentDidMount() {
     const { authChecked } = this.state;
     const { history, cookies } = this.props;
+    const { setUser } = this.context;
 
     if (!authChecked) {
       if (cookies) {
         checkSessionCookie(cookies).then((user: User | undefined) => {
           if (user) {
-            this.setState({ authChecked: true, user: user });
+            setUser(user, () => {
+              this.setState({ authChecked: true });
+            });
           } else {
+            setUser(null);
             history.replace("/");
           }
         });
       } else {
+        setUser(null);
         history.replace("/");
       }
     }
   }
 
   render() {
+    const { user } = this.context;
     const { hideHeader } = this.props;
     const { authChecked } = this.state;
 
+    if (
+      authChecked &&
+      user &&
+      !user.university &&
+      (this.props.history.location.pathname !== "/profile" ||
+        this.props.history.location.search !== "?uni=missing")
+    ) {
+      return <Redirect to={"/profile?uni=missing"} />;
+    }
+
     return (
       <>
-        <Loader show={!authChecked} />
-        {authChecked && (
-          <>
-            {!hideHeader && <Header />}
-            <Container>{this.props.children}</Container>
-          </>
-        )}
+        <Loader show={!authChecked || (this.props.requireAuth && !user)} />
+        {!hideHeader && <Header />}
+        <Container>{this.props.children}</Container>
       </>
     );
   }

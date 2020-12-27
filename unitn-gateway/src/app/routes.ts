@@ -11,6 +11,7 @@
 
 import express from 'express';
 import {
+  course,
   courses,
   info
 } from './controller';
@@ -19,7 +20,7 @@ const router = express.Router();
 
 router.get('/info', info);
 router.get('/courses', courses);
-router.post('/courses/:id');
+router.get('/course/:id', course);
 
 
 export default router;

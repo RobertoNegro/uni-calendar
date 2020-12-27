@@ -1,0 +1,46 @@
+.course-list .list-group-item {
+    padding: 0;
+}
+
+.course-list .list-group-item {
+    padding: 1.5rem;
+}
+
+.course-list .list-group-item .col, .course-list .list-group-item .row {
+    align-items: center;
+    justify-content: center;
+}
+
+
+.course-list .course-name {
+    justify-content: flex-start;
+    border-right: 1px solid rgba(0,0,0,0.2);
+}
+
+.course-info-header {
+    font-weight: bold;
+    text-align: center;
+}
+
+@media screen and (max-width: 1200px) {
+    .course-list .course-name {
+        border-right: 0;
+        margin-bottom: 1.5rem;
+    }
+}
+@media screen and (max-width: 992px) {
+
+}
+@media screen and (max-width: 768px) {
+
+    .course-info-header {
+        text-align: left;
+    }
+    .course-buttons {
+        margin-top: 1.5rem;
+    }
+}
+
+@media screen and (max-width: 576px) {
+
+}

@@ -97,7 +97,7 @@ class ConfirmModal extends Component<ConfirmModalProps, ConfirmModalState> {
             </Button>
           )}
           <Button
-            variant="secondary"
+            variant="primary"
             onClick={() => this.props.handleClose(true)}
           >
             Confirm

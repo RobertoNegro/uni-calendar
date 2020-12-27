@@ -1,9 +1,11 @@
-import University from './University';
+import University from "./University";
+import Course from "./Course";
 
 export default interface CourseSettings {
   id: number;
   university: University;
   courseId: string;
+  course?: Course;
   userId: number;
   asynchronous: boolean;
   link: string | null;

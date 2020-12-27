@@ -45,7 +45,13 @@ export const createEvent = async (req: Request, res: Response) => {
   const asynchronous = req.body['asynchronous'];
   const color = req.body['color'];
 
-  if (!startTime || !endTime || !name || !asynchronous || !color) {
+  if (
+    startTime == null ||
+    endTime == null ||
+    name == null ||
+    asynchronous == null ||
+    color == null
+  ) {
     res.status(400);
     res.send({ error: 'Missing parameters' });
     return;

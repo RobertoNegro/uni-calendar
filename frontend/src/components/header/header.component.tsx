@@ -1,9 +1,10 @@
 import { Image, Nav, Navbar } from "react-bootstrap";
 import AuthContext from "../../contexts/auth.context";
 import React from "react";
+import "./header.styles.css";
 
 const Header = () => (
-  <Navbar className="bg-red" expand="lg" variant="dark">
+  <Navbar expand="lg" variant="light">
     <Navbar.Brand href="./homepage" className="app-name">
       <img
         src="./unicalendar.svg"

@@ -1,9 +1,9 @@
-import ReactLoader from "react-loader-spinner";
 import "./loader.styles.css";
+import Spinner from "../spinner/spinner.component";
 
 const Loader = ({ show }: { show?: boolean }) => (
   <div className={`overlay ${show ? "" : "overlay-hide"}`}>
-    <ReactLoader type="ThreeDots" color="#c01532" height={100} width={100} />
+    <Spinner />
   </div>
 );
 

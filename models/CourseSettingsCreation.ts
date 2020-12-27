@@ -1,7 +1,6 @@
 export default interface CourseSettingsCreation {
-  universitySlug: string;
-  courseId: string;
-  userId: number;
+  courseId?: string;
+  universitySlug?: string;
   asynchronous: boolean;
   link: string | null;
   colourId: string;

@@ -16,7 +16,7 @@ export default {
   ) =>
     `The course ${course}` +
     (async ? ` (asynchronous course)` : ``) +
-    ` is starting in ${moment.duration(notifyBefore, 'seconds').humanize()} (${moment(
+    ` is starting in ${moment.duration(notifyBefore, 'minutes').humanize()} (${moment(
       startTime
     ).format('HH:mm')} - ${moment(endTime).format('HH:mm')} ${moment(endTime).format(
       'YYYY/MM/DD'
@@ -24,7 +24,7 @@ export default {
     (location ? `\nLocation: ${location}` : '') +
     (url ? `\nJoin the meeting: ${url}` : ''),
   SUBJECT: (course: string, notifyBefore: number, startTime: string, endTime: string) =>
-    `EVENT: ${course} in ${moment.duration(notifyBefore, 'seconds').humanize()} (${moment(
+    `EVENT: ${course} in ${moment.duration(notifyBefore, 'minutes').humanize()} (${moment(
       startTime
     ).format('HH:mm')} - ${moment(endTime).format('HH:mm')} ${moment(endTime).format(
       'YYYY/MM/DD'

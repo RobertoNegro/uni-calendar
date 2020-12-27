@@ -13,6 +13,7 @@ import University from "../../models/University";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import moment from "moment";
 import queryString from "query-string";
+import "./user-profile.styles.css";
 
 interface UserProfileProps extends ReactCookieProps, RouteComponentProps {}
 
@@ -206,7 +207,7 @@ class UserProfile extends React.Component<UserProfileProps, UserProfileState> {
           {({ user }) =>
             user ? (
               <>
-                <Card className="mt-3">
+                <Card>
                   <Image
                     src={user.picture}
                     style={{ width: "150px", height: "150px" }}

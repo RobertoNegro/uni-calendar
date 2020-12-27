@@ -1,0 +1,38 @@
+.check-color {
+  display: inline-flex !important;
+  justify-content: center;
+  align-items: center;
+  margin: 5px;
+  padding-left: 0 !important;
+}
+
+.check-color input[type="radio"] {
+  display: none;
+}
+.check-color input[type="radio"]:checked + .form-check-label .check-color-label {
+  transform: scale(1.3);
+}
+
+.check-color .form-check-label {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.check-color-label {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 2px;
+  transform: scale(0.7);
+  transition: transform 0.4s ease 0s;
+}
+.card-color {
+  padding: .375rem .75rem;
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
+}
+.color-focused {
+  border: 3px solid #ced4da;
+  background-color: black;
+}

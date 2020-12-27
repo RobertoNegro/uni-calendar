@@ -12,7 +12,7 @@
 import { Request, Response } from 'express';
 
 import { coursesDb } from './orm';
-import { dbEntryToModel, getAuthorizationHeader } from './helper';
+import { dbEntryToModel, getAuthorizationHeader, injectCourse } from './helper';
 import axios from 'axios';
 
 export const getListCourses = async (req: Request, res: Response) => {
@@ -29,8 +29,12 @@ export const getListCourses = async (req: Request, res: Response) => {
       const courses = await coursesDb.listCourseByUserId(authCheck.data.user.id);
 
       if (courses) {
+        const sCourses = courses.map(dbEntryToModel);
+        for (let i = 0; i < sCourses.length; i++) {
+          sCourses[i] = await injectCourse(sCourses[i]);
+        }
         res.status(200);
-        res.send(courses.map(dbEntryToModel));
+        res.send(sCourses);
       } else {
         res.status(404);
         res.send({ error: 'User not found' });
@@ -72,7 +76,7 @@ export const getCourse = async (req: Request, res: Response) => {
 
       if (course) {
         res.status(200);
-        res.send(dbEntryToModel(course));
+        res.send(await injectCourse(dbEntryToModel(course)));
       } else {
         res.status(404);
         res.send({ error: 'User not found' });
@@ -180,7 +184,7 @@ export const addCourse = async (req: Request, res: Response) => {
 
       if (course) {
         res.status(200);
-        res.send(dbEntryToModel(course));
+        res.send(await injectCourse(dbEntryToModel(course)));
       } else {
         res.status(404);
         res.send({ error: 'User not found' });
@@ -255,7 +259,7 @@ export const updateCourse = async (req: Request, res: Response) => {
 
       if (course) {
         res.status(200);
-        res.send(dbEntryToModel(course));
+        res.send(await injectCourse(dbEntryToModel(course)));
       } else {
         res.status(404);
         res.send({ error: 'User not found' });

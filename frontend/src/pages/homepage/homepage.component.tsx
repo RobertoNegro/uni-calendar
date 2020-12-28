@@ -304,7 +304,7 @@ class HomePage extends Component<HomePageProps, HomePageState> {
                   {this.state.loadingCurses && (
                     <div
                       className={
-                        "d-flex justify-content-center align-items-center"
+                        "d-flex justify-content-center align-items-center mt-4"
                       }
                     >
                       <Spinner />

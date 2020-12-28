@@ -27,7 +27,7 @@ const SignIn = ({ history }: SignInProps) => (
           Don't have an account? Sign up with Google
         </Card.Text>
         <Button
-          href="http://localhost:8082/auth/google/oauth"
+          href="http://unicalendar.squidlab.it:8080/auth/google/oauth"
           className="btn-block"
           variant="danger"
         >

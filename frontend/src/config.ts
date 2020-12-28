@@ -1,3 +1,3 @@
 export default {
-  API_URL: "http://localhost:8082",
+  API_URL: "http://unicalendar.squidlab.it:8080",
 };

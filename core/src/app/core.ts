@@ -8,7 +8,8 @@ import moment from 'moment';
 export const updateUserCalendar = async (userId: number) => {
   const alreadyUpdating = await coreDb.getCalendarUpdateProgress(userId);
   if (alreadyUpdating) {
-    throw new Error('Already updating!');
+    console.log('Already updating!');
+    return;
   }
 
   await coreDb.setCalendarUpdateProgress(userId, 0, 100, 'Clearing previous calendar events..');

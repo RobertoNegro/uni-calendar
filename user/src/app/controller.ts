@@ -36,7 +36,10 @@ export const setUserSettings = async (req: Request, res: Response) => {
         const settings = await userOrm.updateUserSetting(authCheck.data.user.id, universitySlug);
 
         if (universitySlug !== authCheck.data.user.universitySlug) {
-          await userOrm.clearFollowedCourse(authCheck.data.user.id, universitySlug);
+          await userOrm.clearFollowedCourse(
+            authCheck.data.user.id,
+            authCheck.data.user.universitySlug
+          );
         }
 
         if (settings) {

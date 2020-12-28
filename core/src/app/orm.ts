@@ -4,6 +4,7 @@ import User from '../models/User';
 import { FollowedCourseEntry } from './models';
 import TelegramNotification from '../models/TelegramNotification';
 import EmailNotification from '../models/EmailNotification';
+import CalendarUpdate from '../models/CalendarUpdate';
 
 export class CoreDb {
   db = pgPromise({})(config.DB);
@@ -85,6 +86,37 @@ export class CoreDb {
     return await this.db.none('DELETE FROM "EmailNotification" WHERE "followedCourseId" = $1', [
       followedCourseId,
     ]);
+  }
+
+  async getCalendarUpdateProgress(userId: number) {
+    const res = await this.db.oneOrNone<CalendarUpdate>(
+      'SELECT * FROM "CalendarUpdate" WHERE "userId" = $1',
+      [userId]
+    );
+    return res ? res : null;
+  }
+
+  async setCalendarUpdateProgress(
+    userId: number,
+    progress: number,
+    max: number,
+    progressMessage: string | null
+  ) {
+    if (await this.getCalendarUpdateProgress(userId)) {
+      return await this.db.oneOrNone<CalendarUpdate>(
+        'UPDATE "CalendarUpdate" SET ("progress", "max", "progressMessage") = ($2, $3, $4) WHERE "userId" = $1 RETURNING *',
+        [userId, progress, max, progressMessage]
+      );
+    } else {
+      return await this.db.oneOrNone<CalendarUpdate>(
+        'INSERT INTO "CalendarUpdate"("userId", "progress", "max", "progressMessage") VALUES($1, $2, $3, $4) RETURNING *',
+        [userId, progress, max, progressMessage]
+      );
+    }
+  }
+
+  async deleteCalendarUpdate(userId: number) {
+    return await this.db.none('DELETE FROM "CalendarUpdate" WHERE "userId" = $1', [userId]);
   }
 }
 

@@ -6,10 +6,18 @@ import Course from '../models/Course';
 import moment from 'moment';
 
 export const updateUserCalendar = async (userId: number) => {
+  const alreadyUpdating = await coreDb.getCalendarUpdateProgress(userId);
+  if (alreadyUpdating) {
+    throw new Error('Already updating!');
+  }
+
+  await coreDb.setCalendarUpdateProgress(userId, 0, 100, 'Clearing previous calendar events..');
+
   console.log(`Clearing calendar of user ${userId}`);
   await axios.post('http://calendar/clear/' + userId);
 
   const followedCourses = await coreDb.listCourseByUserId(userId);
+  await coreDb.setCalendarUpdateProgress(userId, 0, followedCourses.length, 'Initializing..');
   for (let j = 0; j < followedCourses.length; j++) {
     const followedCourse = followedCourses[j];
     console.log(
@@ -23,6 +31,13 @@ export const updateUserCalendar = async (userId: number) => {
         followedCourse.courseId
     );
     const course = courseReq.data;
+
+    await coreDb.setCalendarUpdateProgress(
+      userId,
+      j + 1,
+      followedCourses.length,
+      `Creating events of: ${course.name} (${course.professor})`
+    );
 
     const events = await axios.get<CourseEvent[]>(
       'http://universities_gateway/university/' +
@@ -95,4 +110,5 @@ export const updateUserCalendar = async (userId: number) => {
       });
     }
   }
+  await coreDb.deleteCalendarUpdate(userId);
 };

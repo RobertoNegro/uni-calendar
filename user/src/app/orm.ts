@@ -29,7 +29,7 @@ export class UserDb {
   }
   async clearFollowedCourse(userId: number, newUniversitySlug: string) {
     return await this.db.none(
-      'DELETE FROM "FollowedCourse" where "userId" = $1 AND "universitySlug" LIKE $2',
+      'DELETE FROM "FollowedCourse" where "userId" = $1 AND "universitySlug" = $2',
       [userId, newUniversitySlug]
     );
   }

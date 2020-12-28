@@ -1428,6 +1428,11 @@
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.5.4.tgz#de25b5da9f727985a3757fd59b5d028aba75841a"
   integrity sha512-ZpKr+WTb8zsajqgDkvCEWgp6d5eJT6Q63Ng2neTbzBO76Lbe91vX/iVIW9dikq+Fs3yEo+ls4cxeXABD2LtcbQ==
 
+"@ramonak/react-progress-bar@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@ramonak/react-progress-bar/-/react-progress-bar-2.0.0.tgz#7928331605610495623d40f4a98ec2be754acc6c"
+  integrity sha512-AMK9wXfXV2QAC+aQOoqP/0WDA8phvkc+GKPvAqNZcgu0msic3aMAnFl0BjvBXdaxc6HgvGvKF5JC5rygOKe/xw==
+
 "@restart/context@^2.1.4":
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/@restart/context/-/context-2.1.4.tgz#a99d87c299a34c28bd85bb489cb07bfd23149c02"

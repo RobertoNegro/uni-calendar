@@ -24,7 +24,8 @@ import moment from "moment";
 import { eventColorsHash } from "../../helpers";
 import AddModal from "../../components/add-modal/add-modal.component";
 import CourseSettingsCreation from "../../models/CourseSettingsCreation";
-import Loader from "../../components/loader/loader.component";
+import CalendarUpdate from "../../models/CalendarUpdate";
+import ProgressBar from "@ramonak/react-progress-bar";
 
 interface HomePageProps extends RouteComponentProps, ReactCookieProps {}
 
@@ -35,7 +36,7 @@ interface HomePageState {
   showHideCustomizeModal: boolean;
   customizeCourse: CourseSettings | undefined;
   loadingCurses: boolean;
-  isRefreshing: boolean;
+  isUpdatingCalendar: CalendarUpdate | false;
   courses: CourseSettings[];
 }
 
@@ -51,7 +52,7 @@ class HomePage extends Component<HomePageProps, HomePageState> {
       showHideCustomizeModal: false,
       customizeCourse: undefined,
       loadingCurses: false,
-      isRefreshing: false,
+      isUpdatingCalendar: false,
       courses: [],
     };
   }
@@ -60,7 +61,43 @@ class HomePage extends Component<HomePageProps, HomePageState> {
     this.loadCourses().catch((e) =>
       console.error("Error while fetching followed courses: ", e)
     );
+
+    this.updateCalendarStatus().catch((e) => console.error(e));
   }
+
+  updateCalendarStatus = async () => {
+    const { cookies } = this.props;
+    if (cookies) {
+      const sessionToken = cookies.get("sessionToken");
+      if (sessionToken) {
+        let statusReq = null;
+        try {
+          statusReq = await axios.get<CalendarUpdate>(
+            config.API_URL + "/update/status",
+            {
+              headers: {
+                Authorization: "Bearer " + sessionToken,
+              },
+            }
+          );
+        } catch (e) {
+          console.warn("Error while getting updating calendar status:", e);
+        }
+        if (statusReq && statusReq.data) {
+          const status = statusReq.data;
+          this.setState({
+            isUpdatingCalendar: status,
+          });
+        } else {
+          this.setState({
+            isUpdatingCalendar: false,
+          });
+        }
+      }
+    }
+
+    setTimeout(this.updateCalendarStatus, 1000);
+  };
 
   loadCourses = async () => {
     this.setState({
@@ -205,13 +242,11 @@ class HomePage extends Component<HomePageProps, HomePageState> {
       const sessionToken = cookies.get("sessionToken");
       if (sessionToken) {
         try {
-          this.setState({ isRefreshing: true });
           await axios.get(config.API_URL + "/update", {
             headers: {
               Authorization: "Bearer " + sessionToken,
             },
           });
-          this.setState({ isRefreshing: false });
         } catch (e) {
           console.error("Error while adding course", e);
         }
@@ -222,9 +257,23 @@ class HomePage extends Component<HomePageProps, HomePageState> {
   render() {
     return (
       <PageContainer requireAuth={true} history={this.props.history}>
-        {this.state.isRefreshing && (
+        {this.state.isUpdatingCalendar && (
           <Alert variant="secondary">
-            We're currently updating your Google Calendar...
+            <div className="h4 mb-0">
+              We're currently updating your Google Calendar...
+            </div>
+            <div>{this.state.isUpdatingCalendar.progressMessage}</div>
+            <ProgressBar
+              baseBgColor={"#c0c0c0"}
+              bgcolor={"#c01532"}
+              width={"auto"}
+              labelAlignment={"right"}
+              margin={".5rem 2rem"}
+              completed={
+                (100 * this.state.isUpdatingCalendar.progress) /
+                this.state.isUpdatingCalendar.max
+              }
+            />
           </Alert>
         )}
         <AuthContext.Consumer>
@@ -241,7 +290,7 @@ class HomePage extends Component<HomePageProps, HomePageState> {
                         variant="secondary"
                         onClick={() => this.handleRefresh()}
                       >
-                        Refresh <i className="fas fa-calendar" />
+                        Update calendar <i className="fas fa-calendar" />
                       </Button>
                       <Button
                         variant="secondary"
@@ -252,12 +301,20 @@ class HomePage extends Component<HomePageProps, HomePageState> {
                     </>
                   }
                 >
-                  {this.state.loadingCurses && <Spinner />}
+                  {this.state.loadingCurses && (
+                    <div
+                      className={
+                        "d-flex justify-content-center align-items-center"
+                      }
+                    >
+                      <Spinner />
+                    </div>
+                  )}
                   {!this.state.loadingCurses && (
                     <ListGroup className="list-group-flush course-list">
                       {this.state.courses.map((course) =>
                         course && course.course ? (
-                          <ListGroupItem>
+                          <ListGroupItem key={course.course.id}>
                             <Row>
                               <Col
                                 lg={{ span: "12" }}

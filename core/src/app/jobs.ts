@@ -54,7 +54,12 @@ export const updateCalendars = async () => {
   console.log('Refreshing user calendars..');
   if (users) {
     for (let i = 0; i < users.length; i++) {
-      await updateUserCalendar(users[i].id);
+      try {
+        await updateUserCalendar(users[i].id);
+      } catch (e) {
+        console.error(`Error while updating user ${users[i].id}'s calendar:`, e);
+        await coreDb.deleteCalendarUpdate(users[i].id);
+      }
     }
   }
 };

@@ -136,6 +136,18 @@ CREATE TABLE "User" (
 ;
 
 -- ----------------------------
+-- Table structure for CalendarUpdate
+-- ----------------------------
+DROP TABLE IF EXISTS "CalendarUpdate";
+CREATE TABLE "CalendarUpdate" (
+  "userId" int4 NOT NULL,
+  "progress" int4 NOT NULL,
+  "max" int4  NOT NULL,
+  "progressMessage" varchar(255) COLLATE "pg_catalog"."default"
+)
+;
+
+-- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
 ALTER SEQUENCE "EmailNotification_id_seq"
@@ -184,6 +196,11 @@ ALTER TABLE "TelegramNotification" ADD CONSTRAINT "TelegramNotification_pkey" PR
 ALTER TABLE "University" ADD CONSTRAINT "University_pkey" PRIMARY KEY ("slug");
 
 -- ----------------------------
+-- Primary Key structure for table CalendarUpdate
+-- ----------------------------
+ALTER TABLE "CalendarUpdate" ADD CONSTRAINT "CalendarUpdate_pkey" PRIMARY KEY ("userId");
+
+-- ----------------------------
 -- Primary Key structure for table User
 -- ----------------------------
 ALTER TABLE "User" ADD CONSTRAINT "User_pkey" PRIMARY KEY ("id");
@@ -208,3 +225,8 @@ ALTER TABLE "TelegramNotification" ADD CONSTRAINT "fkFollowedCourseId" FOREIGN K
 -- Foreign Keys structure for table User
 -- ----------------------------
 ALTER TABLE "User" ADD CONSTRAINT "fkUniversitySlug" FOREIGN KEY ("universitySlug") REFERENCES "University" ("slug") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- ----------------------------
+-- Foreign Keys structure for table CalendarUpdate
+-- ----------------------------
+ALTER TABLE "CalendarUpdate" ADD CONSTRAINT "fkUserId" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -18,7 +18,7 @@ class LoginDone extends React.Component<LoginDoneProps, LoginDoneState> {
   constructor(props: LoginDoneProps) {
     super(props);
     this.state = {
-      redirect: "/homepage",
+      redirect: "/",
     };
   }
 
@@ -55,7 +55,7 @@ class LoginDone extends React.Component<LoginDoneProps, LoginDoneState> {
           typeof exp === "number" ? moment(exp * 1000).toDate() : undefined,
       });
     } else {
-      history.replace("/");
+      history.replace("/?err");
     }
   }
 

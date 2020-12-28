@@ -25,17 +25,25 @@ const telegramDb = new TelegramDb();
 const uniCalendarBot = new UniCalendarBot(telegramDb);
 
 let emailTransporter: Mail | null = null;
-nodemailer.createTestAccount().then((testAccount) => {
-  emailTransporter = nodemailer.createTransport({
-    host: testAccount.smtp.host,
-    port: testAccount.smtp.port,
-    secure: testAccount.smtp.secure,
-    auth: {
-      user: testAccount.user,
-      pass: testAccount.pass,
-    },
-  });
+emailTransporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'provawebmail123@gmail.com',
+    pass: 'jNoT>{^W2aGD3nM^7e9eUp$,',
+  },
 });
+
+// nodemailer.createTestAccount().then((testAccount) => {
+//   emailTransporter = nodemailer.createTransport({
+//     host: testAccount.smtp.host,
+//     port: testAccount.smtp.port,
+//     secure: testAccount.smtp.secure,
+//     auth: {
+//       user: testAccount.user,
+//       pass: testAccount.pass,
+//     },
+//   });
+// });
 
 export const telegram = async (req: Request, res: Response) => {
   const userId = req.body['userId'];

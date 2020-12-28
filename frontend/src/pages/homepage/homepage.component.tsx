@@ -264,7 +264,7 @@ class HomePage extends Component<HomePageProps, HomePageState> {
             </div>
             <div>{this.state.isUpdatingCalendar.progressMessage}</div>
             <ProgressBar
-              baseBgColor={"#c0c0c0"}
+              baseBgColor={"#fff"}
               bgcolor={"#c01532"}
               width={"auto"}
               labelAlignment={"right"}
@@ -312,6 +312,26 @@ class HomePage extends Component<HomePageProps, HomePageState> {
                   )}
                   {!this.state.loadingCurses && (
                     <ListGroup className="list-group-flush course-list">
+                      {this.state.courses.length === 0 && (
+                        <div
+                          className={
+                            "d-flex flex-column justify-content-center align-items-center"
+                          }
+                        >
+                          <div>
+                            <i
+                              className="fas fa-search mt-4 mb-4"
+                              style={{
+                                color: "#eee",
+                                fontSize: "5rem",
+                              }}
+                            />
+                          </div>
+                          <div>
+                            <i style={{ color: "#aaa" }}>No course set yet.</i>
+                          </div>
+                        </div>
+                      )}
                       {this.state.courses.map((course) =>
                         course && course.course ? (
                           <ListGroupItem key={course.course.id}>

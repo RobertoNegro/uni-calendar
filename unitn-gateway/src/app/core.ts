@@ -11,14 +11,9 @@
  */
 import UniversityCreation from '../models/UniversityCreation';
 import config from '../config';
+import Course from '../models/Course';
+import axios from 'axios';
 
-// --- EXAMPLE ---
-
-export const getHello: (name: string) => { text: string } = (name) => {
-  return {
-    text: `Hello ${name}`,
-  };
-};
 export const getInfo: () => UniversityCreation = () => {
   return {
     slug: config.slug,
@@ -26,4 +21,39 @@ export const getInfo: () => UniversityCreation = () => {
     shortName: config.shortName,
     serverURI: config.HOST,
   };
+};
+export const getCourseById: (id: string) => Promise<Course> = async (id) => {
+  let course: Course = {
+    id: '',
+    name: '',
+    professor: '',
+    university: {
+      slug: '',
+      fullName: '',
+      shortName: '',
+      serverURI: ''
+    },
+  };
+  try {
+    const activities = await  axios.post('https://easyacademy.unitn.it/AgendaStudentiUnitn/combo_call.php?sw=ec_&aa=2020&page=attivita' )
+    let activitiesJson = JSON.parse(activities.data.substring(22, activities.data.length - 46));
+    let courses = activitiesJson[0].elenco.map((res:any) => {
+        return {
+          id: res.valore,
+          name: unescape(encodeURIComponent(res.label)),
+          professor: unescape(encodeURIComponent(res.docente)),
+          university: getInfo(),
+        };
+      }
+    );
+    courses.forEach(function(element: Course) {
+      if(element.id === id) {
+        course = element;
+      }
+    });
+    return course;
+  } catch (e) {
+    console.error(e);
+    return e
+  }
 };

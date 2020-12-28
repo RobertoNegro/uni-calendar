@@ -11,34 +11,42 @@
 
 import { Request, Response } from 'express';
 import axios from 'axios';
+import qs from 'querystring'
 
 import {
+  getCourseById,
   getInfo
 } from './core';
-import config from '../config';
 import Course from '../models/Course';
+import moment from 'moment';
 
 export const info = (req: Request, res: Response) => {
   res.send(getInfo());
 };
 
 export const courses = async (req: Request, res: Response) => {
-  let activities = await axios.get('https://easyacademy.unitn.it/AgendaStudentiUnitn/combo_call.php?sw=ec_&aa=2020&page=attivita')
-  let activitiesJson = JSON.parse(activities.data.substring(22, activities.data.length - 46));
-  let courses = activitiesJson[0].elenco.map((course:any) => {
+  try {
+    let activities = await axios.get('https://easyacademy.unitn.it/AgendaStudentiUnitn/combo_call.php?sw=ec_&aa=2020&page=attivita')
+    let activitiesJson = JSON.parse(activities.data.substring(22, activities.data.length - 46));
+    let courses = activitiesJson[0].elenco.map((course:any) => {
       return {
-        id: course.id,
-        name: course.label,
-        professor: course.docente,
+        id: course.valore,
+        name: unescape(encodeURIComponent(course.label)),
+        professor: unescape(encodeURIComponent(course.docente)),
         university: getInfo(),
       };
     });
-  res.send(courses);
+    res.send(courses);
+  } catch (e) {
+    console.error(e);
+    res.status(500);
+    res.send();
+  }
 };
 export const course = async (req: Request, res: Response) => {
-  let courseId: number | null = null;
+  let courseId: string | null = null;
   try {
-    courseId = parseInt(req.params['id']);
+    courseId = req.params['id'];
   } catch (e) {}
   let course: Course = {
     id: '',
@@ -56,22 +64,7 @@ export const course = async (req: Request, res: Response) => {
     res.status(400);
     res.send();
   } else {
-      const activities = await  axios.post('https://easyacademy.unitn.it/AgendaStudentiUnitn/combo_call.php?sw=ec_&aa=2020&page=attivita' )
-      let activitiesJson = JSON.parse(activities.data.substring(22, activities.data.length - 46));
-      let courses = activitiesJson[0].elenco.map((res:any) => {
-            return {
-              id: res.id,
-              name: res.label,
-              professor: res.docente,
-              university: getInfo(),
-            };
-          }
-      );
-      courses.forEach(function(element: Course) {
-        if(element.id === (courseId ? courseId.toString() : '')) {
-          course = element;
-        }
-      });
+      course = await getCourseById(courseId);
       if(course.id !== '') {
         res.send(course);
       } else {
@@ -81,32 +74,35 @@ export const course = async (req: Request, res: Response) => {
   }
 };
 export const events = async (req: Request, res: Response) => {
-  let courseId: number | null = null;
+  let courseId: string | null = null;
   try {
-    courseId = parseInt(req.params['id']);
+    courseId = req.params['id'];
   } catch (e) {}
 
   if (courseId == null) {
     res.status(400);
     res.send();
   } else {
-
-    // chiamare /courses by Id passato per url e poi passare il elenco.valore
-    const course = await  axios.post('https://easyacademy.unitn.it/AgendaStudentiUnitn/grid_call.php', {
+    const eventsResult = await axios.post('https://easyacademy.unitn.it/AgendaStudentiUnitn/grid_call.php', qs.stringify({
       anno: 2020,
       include: 'attivita',
-      attività: '',
+      attivita: courseId,
       all_events: 1
-    }, {
+    }), {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     })
-    if (!course) {
-      res.status(404);
-      res.send();
-    } else {
-      res.send({ ...course, university: getInfo() });
-    }
+    let events = eventsResult.data.celle.map((event: any) => {
+      return {
+        name: unescape(encodeURIComponent(event.nome_insegnamento)),
+        course: courseId,
+        startTime: moment(event.data+' '+event.ora_inizio, 'DD/MM/YYYY hh:mm').toISOString(),
+        endTime: moment(event.data+' '+event.ora_fine, 'DD/MM/YYYY hh:mm').toISOString(),
+        location: decodeURIComponent(escape(event.aula)),
+        university: getInfo(),
+      };
+    })
+    res.send(events)
   }
 };

@@ -12,7 +12,7 @@
 import express from 'express';
 import {
   course,
-  courses,
+  courses, events,
   info
 } from './controller';
 
@@ -21,6 +21,7 @@ const router = express.Router();
 router.get('/info', info);
 router.get('/courses', courses);
 router.get('/course/:id', course);
+router.get('/course/:id/events', events);
 
 
 export default router;

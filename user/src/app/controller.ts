@@ -13,34 +13,34 @@ import { Request, Response } from 'express';
 import axios from 'axios';
 import { userOrm } from './orm';
 import { getAuthorizationHeader } from './helper';
+import User from '../models/User';
 
 export const setUserSettings = async (req: Request, res: Response) => {
   const universitySlugRequest = req.body['universitySlug'];
   const token = getAuthorizationHeader(req);
 
   try {
-    const authCheck = await axios.get<{ user: { id: number; universitySlug: string } }>(
-      'http://authentication/',
-      {
-        headers: {
-          Authorization: `Bearer ` + token,
-        },
-      }
-    );
+    const authCheck = await axios.get<{ user: User }>('http://authentication/', {
+      headers: {
+        Authorization: `Bearer ` + token,
+      },
+    });
 
     if (authCheck.data.user.id) {
       const university = await userOrm.getUniversityBySlug(universitySlugRequest);
       const universitySlug = university && university.slug ? university.slug : null;
 
       if (universitySlug) {
-        const settings = await userOrm.updateUserSetting(authCheck.data.user.id, universitySlug);
-
-        if (universitySlug !== authCheck.data.user.universitySlug) {
+        if (
+          authCheck.data.user.university &&
+          universitySlug !== authCheck.data.user.university.slug
+        ) {
           await userOrm.clearFollowedCourse(
             authCheck.data.user.id,
-            authCheck.data.user.universitySlug
+            authCheck.data.user.university.slug
           );
         }
+        const settings = await userOrm.updateUserSetting(authCheck.data.user.id, universitySlug);
 
         if (settings) {
           res.status(201);

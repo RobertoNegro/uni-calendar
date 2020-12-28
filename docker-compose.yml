@@ -64,6 +64,17 @@ services:
     environment:
       TZ: "Europe/Rome"
 
+  uniexam_gateway:
+    build:
+      context: ./uniexam-gateway
+      dockerfile: ./Dockerfile.dev
+    volumes:
+      - uniexam_gateway_node_modules:/www/node_modules
+      - ./uniexam-gateway:/www
+      - ./models:/www/src/models
+    environment:
+      TZ: "Europe/Rome"
+
   unibz_gateway_cache_db:
     image: postgres
     ports:
@@ -170,6 +181,7 @@ volumes:
   notification_node_modules:
   unitn_gateway_node_modules:
   unibz_gateway_node_modules:
+  uniexam_gateway_node_modules:
   calendar_node_modules:
   authentication_node_modules:
   universities_gateway_node_modules:

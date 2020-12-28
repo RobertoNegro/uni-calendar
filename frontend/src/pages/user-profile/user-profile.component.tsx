@@ -138,7 +138,7 @@ class UserProfile extends React.Component<UserProfileProps, UserProfileState> {
                 In order to associate your Telegram account with your
                 UniCalendar account, please send a message to our UniCalendar
                 bot with this command:{" "}
-                <pre className={"mt-2"}>\start {res.data.secret}</pre>
+                <pre className={"mt-2"}>/start {res.data.secret}</pre>
                 <CountdownCircleTimer
                   isPlaying
                   initialRemainingTime={moment(res.data.expires).diff(

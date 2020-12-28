@@ -27,10 +27,10 @@ export class UserDb {
       slug
     );
   }
-  async clearFollowedCourse(userId: number, newUniversitySlug: string) {
+  async clearFollowedCourse(userId: number, universitySlug: string) {
     return await this.db.none(
-      'DELETE FROM "FollowedCourse" where "userId" = $1 AND "universitySlug" = $2',
-      [userId, newUniversitySlug]
+      'DELETE FROM "FollowedCourse" where "userId" = $1 AND "universitySlug" LIKE $2',
+      [userId, universitySlug]
     );
   }
 }

@@ -22,6 +22,11 @@
     text-align: center;
 }
 
+@media screen and (min-width: 1200px) {
+    .course-info {
+        width: 250px !important;
+    }
+}
 @media screen and (max-width: 1200px) {
     .course-list .course-name {
         border-right: 0;

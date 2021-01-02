@@ -2,12 +2,12 @@
  * Bot controller
  */
 
-import config from '../config';
+import secrets from '../secrets';
 import TelegramBot from 'node-telegram-bot-api';
 import { TelegramDb } from './orm';
 
 export class UniCalendarBot {
-  bot = new TelegramBot(config.botToken, { polling: true });
+  bot = new TelegramBot(secrets.botToken, { polling: true });
   db: TelegramDb;
 
   constructor(telegramDb: TelegramDb) {

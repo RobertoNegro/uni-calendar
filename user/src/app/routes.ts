@@ -17,6 +17,4 @@ const router = express.Router();
 router.post('/settings', setUserSettings);
 router.get('/settings', getUserSettings);
 
-router.get('/internal/users', getUserSettings);
-
 export default router;

@@ -21,7 +21,7 @@ export default {
     ).format('HH:mm')} - ${moment(endTime).format('HH:mm')} ${moment(endTime).format(
       'YYYY/MM/DD'
     )})!` +
-    (location ? `\nLocation: ${location}` : '') +
+    (location ? `\nLocation: ${location}.` : '') +
     (url ? `\nJoin the meeting: ${url}` : ''),
   SUBJECT: (course: string, notifyBefore: number, startTime: string, endTime: string) =>
     `EVENT: ${course} in ${moment.duration(notifyBefore, 'minutes').humanize()} (${moment(

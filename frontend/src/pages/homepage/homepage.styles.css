@@ -22,6 +22,20 @@
     text-align: center;
 }
 
+.course-info > div {
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+}
+
+.course-info a {
+    color: #c01532 !important;
+}
+
+.course-info a:hover {
+    color: #991229 !important;
+}
+
 @media screen and (min-width: 1200px) {
     .course-info {
         width: 250px !important;

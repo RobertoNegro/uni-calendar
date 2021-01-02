@@ -370,7 +370,9 @@ class HomePage extends Component<HomePageProps, HomePageState> {
                                 {course.link && (
                                   <div>
                                     <i className="fas fa-link" /> Link:{" "}
-                                    {course.link}
+                                    <a href={course.link} target="_blank">
+                                      {course.link}
+                                    </a>
                                   </div>
                                 )}
                                 {course.colourId !== "0" && (

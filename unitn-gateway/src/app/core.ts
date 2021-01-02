@@ -14,6 +14,21 @@ import config from '../config';
 import Course from '../models/Course';
 import axios from 'axios';
 
+export const sanitizeString: (s: string) => string = (s) => {
+  s = s
+    .replace(/<[^>]*>/g, '')
+    .replace(/\[[^\]]*]/g, '')
+    .replace('_lez', '')
+    .replace('_lab', '')
+    .trim();
+
+  try {
+    s = decodeURIComponent(escape(s));
+  } catch (e) {}
+
+  return unescape(encodeURIComponent(s));
+};
+
 export const getInfo: () => UniversityCreation = () => {
   return {
     slug: config.slug,
@@ -31,29 +46,30 @@ export const getCourseById: (id: string) => Promise<Course> = async (id) => {
       slug: '',
       fullName: '',
       shortName: '',
-      serverURI: ''
+      serverURI: '',
     },
   };
   try {
-    const activities = await  axios.post('https://easyacademy.unitn.it/AgendaStudentiUnitn/combo_call.php?sw=ec_&aa=2020&page=attivita' )
-    let activitiesJson = JSON.parse(activities.data.substring(22, activities.data.length - 46));
-    let courses = activitiesJson[0].elenco.map((res:any) => {
-        return {
-          id: res.valore,
-          name: unescape(encodeURIComponent(res.label)),
-          professor: unescape(encodeURIComponent(res.docente)),
-          university: getInfo(),
-        };
-      }
+    const activities = await axios.post(
+      'https://easyacademy.unitn.it/AgendaStudentiUnitn/combo_call.php?sw=ec_&aa=2020&page=attivita'
     );
-    courses.forEach(function(element: Course) {
-      if(element.id === id) {
+    let activitiesJson = JSON.parse(activities.data.substring(22, activities.data.length - 46));
+    let courses = activitiesJson[0].elenco.map((res: any) => {
+      return {
+        id: res.valore,
+        name: sanitizeString(res.label),
+        professor: sanitizeString(res.docente),
+        university: getInfo(),
+      };
+    });
+    courses.forEach(function (element: Course) {
+      if (element.id === id) {
         course = element;
       }
     });
     return course;
   } catch (e) {
     console.error(e);
-    return e
+    return e;
   }
 };

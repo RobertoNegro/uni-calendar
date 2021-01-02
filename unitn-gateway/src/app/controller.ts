@@ -11,12 +11,9 @@
 
 import { Request, Response } from 'express';
 import axios from 'axios';
-import qs from 'querystring'
+import qs from 'querystring';
 
-import {
-  getCourseById,
-  getInfo
-} from './core';
+import { getCourseById, getInfo, sanitizeString } from './core';
 import Course from '../models/Course';
 import moment from 'moment';
 
@@ -26,13 +23,15 @@ export const info = (req: Request, res: Response) => {
 
 export const courses = async (req: Request, res: Response) => {
   try {
-    let activities = await axios.get('https://easyacademy.unitn.it/AgendaStudentiUnitn/combo_call.php?sw=ec_&aa=2020&page=attivita')
+    let activities = await axios.get(
+      'https://easyacademy.unitn.it/AgendaStudentiUnitn/combo_call.php?sw=ec_&aa=2020&page=attivita'
+    );
     let activitiesJson = JSON.parse(activities.data.substring(22, activities.data.length - 46));
-    let courses = activitiesJson[0].elenco.map((course:any) => {
+    let courses = activitiesJson[0].elenco.map((course: any) => {
       return {
         id: course.valore,
-        name: unescape(encodeURIComponent(course.label)),
-        professor: unescape(encodeURIComponent(course.docente)),
+        name: sanitizeString(course.label),
+        professor: sanitizeString(course.docente),
         university: getInfo(),
       };
     });
@@ -56,7 +55,7 @@ export const course = async (req: Request, res: Response) => {
       slug: '',
       fullName: '',
       shortName: '',
-      serverURI: ''
+      serverURI: '',
     },
   };
 
@@ -64,13 +63,13 @@ export const course = async (req: Request, res: Response) => {
     res.status(400);
     res.send();
   } else {
-      course = await getCourseById(courseId);
-      if(course.id !== '') {
-        res.send(course);
-      } else {
-        res.status(404);
-        res.send();
-      }
+    course = await getCourseById(courseId);
+    if (course.id !== '') {
+      res.send(course);
+    } else {
+      res.status(404);
+      res.send();
+    }
   }
 };
 export const events = async (req: Request, res: Response) => {
@@ -83,26 +82,30 @@ export const events = async (req: Request, res: Response) => {
     res.status(400);
     res.send();
   } else {
-    const eventsResult = await axios.post('https://easyacademy.unitn.it/AgendaStudentiUnitn/grid_call.php', qs.stringify({
-      anno: 2020,
-      include: 'attivita',
-      attivita: courseId,
-      all_events: 1
-    }), {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+    const eventsResult = await axios.post(
+      'https://easyacademy.unitn.it/AgendaStudentiUnitn/grid_call.php',
+      qs.stringify({
+        anno: 2020,
+        include: 'attivita',
+        attivita: courseId,
+        all_events: 1,
+      }),
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
       }
-    })
+    );
     let events = eventsResult.data.celle.map((event: any) => {
       return {
-        name: unescape(encodeURIComponent(event.nome_insegnamento)),
+        name: sanitizeString(event.nome_insegnamento),
         course: courseId,
-        startTime: moment(event.data+' '+event.ora_inizio, 'DD/MM/YYYY hh:mm').toISOString(),
-        endTime: moment(event.data+' '+event.ora_fine, 'DD/MM/YYYY hh:mm').toISOString(),
+        startTime: moment(event.data + ' ' + event.ora_inizio, 'DD/MM/YYYY hh:mm').toISOString(),
+        endTime: moment(event.data + ' ' + event.ora_fine, 'DD/MM/YYYY hh:mm').toISOString(),
         location: decodeURIComponent(escape(event.aula)),
         university: getInfo(),
       };
-    })
-    res.send(events)
+    });
+    res.send(events);
   }
 };

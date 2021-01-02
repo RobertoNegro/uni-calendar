@@ -73,9 +73,13 @@ export const events = async (req: Request, res: Response) => {
     res.status(400);
     res.send();
   } else {
+    const course = coursesList.find((c) => {
+      return c.id === courseId;
+    });
+
     res.send([
       {
-        name: course.name,
+        name: course ? course.name : 'Unknown',
         course: `${courseId}`,
         startTime: moment().add(5, 'minutes').toISOString(),
         endTime: moment().add(5, 'minutes').add(2, 'hours').toISOString(),
@@ -83,7 +87,7 @@ export const events = async (req: Request, res: Response) => {
         university: getInfo(),
       },
       {
-        name: course.name,
+        name: course ? course.name : 'Unknown',
         course: `${courseId}`,
         startTime: moment().add(1, 'day').toISOString(),
         endTime: moment().add(1, 'day').add(2, 'hours').toISOString(),

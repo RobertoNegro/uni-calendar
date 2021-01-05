@@ -4,7 +4,7 @@ info:
   version: '1.0'
   description: Service used for user authentication (via Google OAuth 2.0). Accessible from the outside.
 servers:
-  - url: 'http://localhost:8081'
+  - url: 'http://authentication'
 paths:
   /google/oauth:
     post:
@@ -29,6 +29,7 @@ paths:
         Redirect the user to "error page" or "authenticated page" (and saves the google id into the db).
         Request body depends on Google OAuth Results (error or user data), but they are managed directly by PassportJS.
         See http://www.passportjs.org/docs/google/#oauth-2-0 (see Oauth 2.0, NOT 1.0)
+    parameters: []
   /auth:
     post:
       summary: Check user authentication
@@ -68,6 +69,22 @@ paths:
                   type: string
         description: ''
       description: 'Verify the user token if it''s valid. If it''s valid, but the google access code is expired, it will generate a new access code and the token will be sent back to the frontend in order to be saved in the browser cookies.'
+  /refresh:
+    post:
+      summary: Refresh user token
+      operationId: post-refresh
+      responses:
+        '200':
+          description: OK
+      description: 'Internal route. Refresh the Google access token for a specific user, if specified in the body, or of all the users, if userId is not defined in the body.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: number
 components:
   schemas:
     User:
@@ -88,7 +105,7 @@ components:
         firstName:
           type: string
         university:
-          $ref: ./UniversitiesGatewayServices.v1.yaml#/components/schemas/University
+          $ref: ./UniversitiesGatewayService.v1.yaml#/components/schemas/University
         id:
           type: number
         picture:
@@ -98,10 +115,10 @@ components:
       required:
         - email
         - googleAccessToken
+        - googleExpiringTime
+        - googleRefreshToken
         - lastName
         - firstName
         - id
         - picture
-        - googleExpiringTime
-        - googleRefreshToken
   securitySchemes: {}

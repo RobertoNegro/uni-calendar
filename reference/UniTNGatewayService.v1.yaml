@@ -4,7 +4,7 @@ info:
   version: '1.0'
   description: Gateway for obtaining courses and schedules of courses of Università degli Studi di Trento. Not exposed outside to the outside.
 servers:
-  - url: 'http://localhost:3000'
+  - url: 'http://unitn_gateway'
 paths:
   /courses:
     get:
@@ -18,9 +18,9 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: ./UniversitiesGatewayServices.v1.yaml#/components/schemas/Course
+                  $ref: ./UniversitiesGatewayService.v1.yaml#/components/schemas/Course
       operationId: get-courses
-      description: Get the list of courses of UniTN.
+      description: Internal route. Get the list of courses of UniTN.
   '/course/{id}':
     get:
       summary: Get course events by course ID
@@ -33,9 +33,9 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: ./UniversitiesGatewayServices.v1.yaml#/components/schemas/CourseEvent
+                  $ref: ./UniversitiesGatewayService.v1.yaml#/components/schemas/CourseEvent
       operationId: get-course
-      description: Get the schedule of a course of UniTN.
+      description: Internal route. Get the schedule of a course of UniTN.
     parameters:
       - schema:
           type: string
@@ -53,8 +53,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ./UniversitiesGatewayServices.v1.yaml#/components/schemas/UniversityCreation
+                $ref: ./UniversitiesGatewayService.v1.yaml#/components/schemas/UniversityCreation
       operationId: get-info
-      description: Get the university's info.
+      description: Internal route. Get the university's info.
 components:
   schemas: {}

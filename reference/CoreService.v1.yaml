@@ -6,7 +6,7 @@ info:
     The process centric service that manage the different tasks of UniCalendar.
     In particular, it will redirect the requests to the other services when needed and execute some scheduled tasks.
 servers:
-  - url: 'http://localhost:3000'
+  - url: 'http://localhost:8082'
 paths:
   /uni/*:
     get:
@@ -49,6 +49,44 @@ paths:
       summary: Redirect to UserService
       operationId: post-user-*
       description: ''
+  /update:
+    get:
+      summary: Trigger update user calendar
+      tags: []
+      responses: {}
+      operationId: get-update
+      security:
+        - Google OAuth 2.0: []
+      description: Trigger the update of the user calendar. The user ID is taken from the authorization header token.
+  /update/status:
+    get:
+      summary: Get calendar update status
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  userId:
+                    type: number
+                  progress:
+                    type: number
+                  max:
+                    type: number
+                  progressMessage:
+                    type: string
+                required:
+                  - userId
+                  - progress
+                  - max
+      operationId: get-update-status
+      description: 'Get the calendar update status. The user ID is taken from the authorization header token. Progress should be shown as "progress / max", and progressMessage, if available, contains a specific progress message explaining what is happening.'
+      security:
+        - Google OAuth 2.0: []
 components:
   schemas: {}
   securitySchemes:

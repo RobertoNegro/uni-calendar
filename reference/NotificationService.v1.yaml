@@ -4,15 +4,13 @@ info:
   version: '1.0'
   description: Service used in order to send notifications to the users. Not exposed outside to the outside.
 servers:
-  - url: 'http://localhost:8084'
+  - url: 'http://notification'
 paths:
   /telegram:
     post:
       summary: Send a Telegram notification
       operationId: post-telegram
-      description: |-
-        Send a Telegram notification to the user.
-        The Google token of the user is given in the Authorization header of the request.
+      description: Internal route. Send a Telegram notification to the user.
       requestBody:
         content:
           application/json:
@@ -36,9 +34,7 @@ paths:
             schema:
               $ref: '#/components/schemas/EmailNotification'
         description: ''
-      description: |-
-        Send an email to the user.
-        The Google token of the user is given in the Authorization header of the request.
+      description: Internal route. Send an email to the user.
   /telegram/credentials:
     post:
       summary: Get new Telegram credentials
@@ -59,16 +55,9 @@ paths:
                     type: string
                   id:
                     type: number
-      description: Used for the generation of a 6-digits secret string to be used in the Telegram bot in the /start command (e.g. '/start 130593'). This code is used to bind the user to a specific Telegram chatID. The validity of that token is 2 minutes.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                userId:
-                  type: string
-        description: ''
+      description: Used for the generation of a 6-digits secret string to be used in the Telegram bot in the /start command (e.g. '/start 130593'). This code is used to bind the user to a specific Telegram chatID. The validity of that token is 2 minutes. The user ID is taken from the authorization header.
+      security:
+        - Google OAuth 2.0: []
 components:
   schemas:
     TelegramNotification:

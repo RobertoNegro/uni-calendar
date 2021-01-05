@@ -4,7 +4,7 @@ info:
   version: '1.0'
   description: Used to obtain a list of the available university gateways and redirect the requests to the correct gateway. Not exposed outside to the outside.
 servers:
-  - url: 'http://localhost:8083'
+  - url: 'http://universities_gateway'
 paths:
   /universities:
     parameters: []
@@ -38,7 +38,7 @@ paths:
             schema:
               $ref: '#/components/schemas/UniversityCreation'
       description: Used to register a new university gateway. This endpoint will be automatically called as soon as a gateway start.
-  'university/{slug}/courses':
+  '/university/{universitySlug}/courses':
     get:
       summary: List of courses for a specific university
       tags: []
@@ -56,10 +56,10 @@ paths:
     parameters:
       - schema:
           type: string
-        name: slug
+        name: universitySlug
         in: path
         required: true
-  '/university/{universitySlug}/course/{courseId}':
+  '/university/{universitySlug}/course/{courseId}/events':
     parameters:
       - schema:
           type: string
@@ -83,7 +83,32 @@ paths:
               type: array
               items:
                 $ref: '#/components/schemas/CourseEvent'
+        description: OK
       description: Get list of events for a specific course and university.
+  '/university/{universitySlug}/course/{courseId}':
+    parameters:
+      - schema:
+          type: string
+        name: courseId
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: universitySlug
+        in: path
+        required: true
+    get:
+      summary: Get specific course of a specific university
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+      operationId: get-university-slug-course-courseId
+      description: Obtain the details of a course of a specific university given by the university slug and the course ID.
 components:
   schemas:
     University:

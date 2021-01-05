@@ -6,7 +6,7 @@ info:
     Manage the calendar of the user, allowing the user to choose which course to follow and the specific configurations for each of them.
     The Google token of the user is given in the Authorization header of the request.
 servers:
-  - url: 'http://localhost:3000'
+  - url: 'http://courses'
 paths:
   /courses:
     parameters: []
@@ -103,16 +103,14 @@ components:
         id:
           type: number
         university:
-          $ref: ./UniversitiesGatewayServices.v1.yaml#/components/schemas/University
+          $ref: ./UniversitiesGatewayService.v1.yaml#/components/schemas/University
         courseId:
           type: string
         asyncronous:
           type: boolean
         link:
           type: string
-        bgColor:
-          type: string
-        fgColor:
+        colourId:
           type: string
         notifyBefore:
           type: number
@@ -136,9 +134,7 @@ components:
           type: boolean
         link:
           type: string
-        bgColor:
-          type: string
-        fgColor:
+        colourId:
           type: string
         notifyBefore:
           type: number

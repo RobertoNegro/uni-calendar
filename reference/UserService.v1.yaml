@@ -6,7 +6,7 @@ info:
     Manage the user settings.
     The Google token of the user is given in the Authorization header of the request.
 servers:
-  - url: 'http://localhost:3000'
+  - url: 'http://user'
 paths:
   /user/settings:
     get:
@@ -50,7 +50,7 @@ components:
       type: object
       properties:
         university:
-          $ref: ./UniversitiesGatewayServices.v1.yaml#/components/schemas/University
+          $ref: ./UniversitiesGatewayService.v1.yaml#/components/schemas/University
     UserSettingsSet:
       title: UserSettingsSet
       type: object

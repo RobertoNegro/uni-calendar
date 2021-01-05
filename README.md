@@ -5,16 +5,16 @@
 
 ## Links
 * Report: \
-https://docs.google.com/document/d/19aDd-b3WWq1WfxOg1dvHSzBvGgbdHputSkEJ2PeBQwY/edit?usp=sharing
+https://docs.google.com/document/d/19aDd-b3WWq1WfxOg1dvHSzBvGgbdHputSkEJ2PeBQwY
 
 * Presentation: \
-https://docs.google.com/presentation/d/1VZdYX4rfeD455by9lGGyXx5eBdiTZ_uaUpjnHta4eXs/edit?usp=sharing
+https://docs.google.com/presentation/d/1VZdYX4rfeD455by9lGGyXx5eBdiTZ_uaUpjnHta4eXs
 
 * API documentation: \
 https://unicalendar.stoplight.io
 
 * ER diagram: \
-https://lucid.app/lucidchart/invitations/accept/1f404718-b0d8-461b-85ce-b1a4ec115f0b
+  https://lucid.app/lucidchart/004a3d14-2963-4588-bb08-be105b9f1ff3/view
   
 ## Setup
 In some of the services, you'll find a `secrets.example.ts` file. Rename it in `secrets.ts` and fill in the missing values as needed (i.e. Google API key, Telegram bot key, etc). 

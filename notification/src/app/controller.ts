@@ -18,6 +18,7 @@ import stripHtml from 'string-strip-html';
 import nodemailer from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
 import axios from 'axios';
+import secrets from '../secrets';
 
 const nanoid = customAlphabet('1234567890', 6);
 
@@ -28,8 +29,8 @@ let emailTransporter: Mail | null = null;
 emailTransporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'provawebmail123@gmail.com',
-    pass: 'jNoT>{^W2aGD3nM^7e9eUp$,',
+    user: secrets.user,
+    pass: secrets.pass,
   },
 });
 
